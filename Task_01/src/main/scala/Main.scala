@@ -1,6 +1,9 @@
 object Main {
+    case class Person private(firstName: String, lastName: String) {}
+
     def main(args: Array[String]): Unit = {
-        val v = "Halo 1234";
-        println(v);
+        val testPerson = Person("Donald", "Duck");
+
+        println(testPerson);
     }
 }
