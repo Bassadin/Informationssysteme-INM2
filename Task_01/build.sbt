@@ -6,3 +6,6 @@ lazy val root = (project in file("."))
   .settings(
     name := "Task_01"
   )
+
+// https://mvnrepository.com/artifact/com.h2database/h2
+libraryDependencies += "com.h2database" % "h2" % "2.1.214" % Test
