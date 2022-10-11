@@ -1,9 +1,17 @@
+import java.sql.DriverManager
+
 object Main {
-    case class Person private(firstName: String, lastName: String) {}
 
     def main(args: Array[String]): Unit = {
-        val testPerson = Person("Donald", "Duck");
+        println("Starting...")
 
-        println(testPerson);
+        val connection = DriverManager.getConnection("jdbc:h2:./demo");
+        val statement = connection.createStatement();
+        val create = "CREATE TABLE reihen (id INT PRIMARY KEY, name VARCHAR(20), baende INT)";
+        statement.execute(create);
+        statement.close();
+        connection.close();
+
+        println("Terminated.");
     }
 }

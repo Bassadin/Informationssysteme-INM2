@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="sbt: com.h2database:h2:2.1.214:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.h2database:h2:2.1.214:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.13.10:jar" level="project" />
   </component>
 </module>
