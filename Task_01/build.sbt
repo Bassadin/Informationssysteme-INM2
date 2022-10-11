@@ -8,4 +8,4 @@ lazy val root = (project in file("."))
   )
 
 // https://mvnrepository.com/artifact/com.h2database/h2
-libraryDependencies += "com.h2database" % "h2" % "2.1.214" % Test
+libraryDependencies += "com.h2database" % "h2" % "2.1.214"
