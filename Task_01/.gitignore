@@ -1,4 +1,4 @@
-/data/**
+/src/data/**.*
 /demo.mv.db
 /demo.trace.db
 
