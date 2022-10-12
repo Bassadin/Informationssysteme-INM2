@@ -25,7 +25,7 @@ object Main {
               n_citation INT NOT NULL,
               page_start INT NOT NULL,
               page_end INT NOT NULL,
-              doc_type VARCHAR(30) NOT NULL,
+              doc_type VARCHAR(30),
               publisher VARCHAR(30) NOT NULL,
               volume VARCHAR(30) NOT NULL,
               issue VARCHAR(30) NOT NULL,
