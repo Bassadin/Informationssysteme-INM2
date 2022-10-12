@@ -14,7 +14,7 @@ object Main {
               author_id INT NOT NULL PRIMARY KEY,
               name VARCHAR(30) NOT NULL,
               org VARCHAR(30) NOT NULL
-              );""".replaceAll("\n", " ");
+              );""";
         statement.execute(createAuthors);
 
         val createArticles =
@@ -30,13 +30,13 @@ object Main {
               volume VARCHAR(30) NOT NULL,
               issue VARCHAR(30) NOT NULL,
               doi VARCHAR(30) NOT NULL
-              );""".replaceAll("\n", " ");
+              );""";
         statement.execute(createArticles);
 
         val createReferences =
             """CREATE TABLE IF NOT EXISTS references (
               reference_id INT PRIMARY KEY NOT NULL
-              );""".replaceAll("\n", " ");
+              );""";
         statement.execute(createReferences);
 
         val createArticlesReferences =
@@ -47,7 +47,7 @@ object Main {
               article_to_id INT NOT NULL,
               FOREIGN KEY (article_to_id) REFERENCES articles(article_id),
               CHECK (article_from_id!=article_to_id)
-              );""".replaceAll("\n", " ");
+              );""";
         statement.execute(createArticlesReferences);
 
         statement.close();
