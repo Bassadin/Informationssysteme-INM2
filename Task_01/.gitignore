@@ -1,3 +1,7 @@
+/data/**
+/demo.mv.db
+/demo.trace.db
+
 # Created by https://www.toptal.com/developers/gitignore/api/scala,sbt,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=scala,sbt,intellij
 
