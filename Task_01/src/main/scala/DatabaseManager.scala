@@ -6,15 +6,15 @@ object DatabaseManager {
 
     def createDatabases: Unit = {
         val createDBTablesStatement = dbConnection.createStatement();
-        val createAuthors =
+        val createAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS authors (
               author_id INT NOT NULL PRIMARY KEY,
               name VARCHAR(30) NOT NULL,
-              org VARCHAR(30) NOT NULL
+              org VARCHAR(30)
               );""";
-        createDBTablesStatement.execute(createAuthors);
+        createDBTablesStatement.execute(createAuthorsSqlString);
 
-        val createArticles =
+        val createArticlesSqlString =
             """CREATE TABLE IF NOT EXISTS articles (
               title VARCHAR(100) NOT NULL,
               article_id INT NOT NULL PRIMARY KEY,
@@ -28,15 +28,15 @@ object DatabaseManager {
               issue VARCHAR(30) NOT NULL,
               doi VARCHAR(30) NOT NULL
               );""";
-        createDBTablesStatement.execute(createArticles);
+        createDBTablesStatement.execute(createArticlesSqlString);
 
-        val createReferences =
+        val createReferencesSqlString =
             """CREATE TABLE IF NOT EXISTS references (
               reference_id INT PRIMARY KEY NOT NULL
               );""";
-        createDBTablesStatement.execute(createReferences);
+        createDBTablesStatement.execute(createReferencesSqlString);
 
-        val createArticlesReferences =
+        val createArticlesReferencesSqlString =
             """CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               article_from_id INT NOT NULL,
@@ -45,9 +45,9 @@ object DatabaseManager {
               FOREIGN KEY (article_to_id) REFERENCES articles(article_id),
               CHECK (article_from_id!=article_to_id)
               );""";
-        createDBTablesStatement.execute(createArticlesReferences);
+        createDBTablesStatement.execute(createArticlesReferencesSqlString);
 
-        val createArticlesAuthors =
+        val createArticlesAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS articles_authors (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               article_id INT NOT NULL,
@@ -55,7 +55,7 @@ object DatabaseManager {
               author_id INT NOT NULL,
               FOREIGN KEY (author_id) REFERENCES authors(author_id)
               );""";
-        createDBTablesStatement.execute(createArticlesAuthors);
+        createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
     }
