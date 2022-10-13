@@ -10,7 +10,7 @@ object DatabaseManager {
         val createAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS authors (
               author_id BIGINT NOT NULL PRIMARY KEY,
-              name VARCHAR(80) NOT NULL,
+              name VARCHAR(200) NOT NULL,
               org VARCHAR(500)
               );""";
         createDBTablesStatement.execute(createAuthorsSqlString);
@@ -18,16 +18,16 @@ object DatabaseManager {
         val createArticlesSqlString =
             """CREATE TABLE IF NOT EXISTS articles (
               article_id BIGINT NOT NULL PRIMARY KEY,
-              title VARCHAR(100) NOT NULL,
+              title VARCHAR(500) NOT NULL,
               `year` INT NOT NULL,
               n_citation INT NOT NULL,
-              page_start INT NOT NULL,
-              page_end INT NOT NULL,
+              page_start VARCHAR(20) NOT NULL,
+              page_end VARCHAR(20) NOT NULL,
               doc_type VARCHAR(30),
-              publisher VARCHAR(30) NOT NULL,
+              publisher VARCHAR(500) NOT NULL,
               volume VARCHAR(30) NOT NULL,
               issue VARCHAR(30) NOT NULL,
-              doi VARCHAR(30) NOT NULL
+              doi VARCHAR(40)
               );""";
         createDBTablesStatement.execute(createArticlesSqlString);
 
