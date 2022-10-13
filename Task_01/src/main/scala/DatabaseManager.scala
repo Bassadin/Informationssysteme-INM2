@@ -10,15 +10,15 @@ object DatabaseManager {
         val createAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS authors (
               author_id BIGINT NOT NULL PRIMARY KEY,
-              name VARCHAR(30) NOT NULL,
-              org VARCHAR(30)
+              name VARCHAR(80) NOT NULL,
+              org VARCHAR(500)
               );""";
         createDBTablesStatement.execute(createAuthorsSqlString);
 
         val createArticlesSqlString =
             """CREATE TABLE IF NOT EXISTS articles (
-              title VARCHAR(100) NOT NULL,
               article_id BIGINT NOT NULL PRIMARY KEY,
+              title VARCHAR(100) NOT NULL,
               `year` INT NOT NULL,
               n_citation INT NOT NULL,
               page_start INT NOT NULL,
@@ -59,23 +59,24 @@ object DatabaseManager {
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
+
     }
 
     def closeConnection: Unit = {
         dbConnection.close;
     }
 
-    // Use ignore to prevent inserting duplicates
-    val authorInsertStatement = dbConnection.prepareStatement(
-        """
-          MERGE INTO authors (author_id, name, org)
-          VALUES (?, ?, ?)
-          """);
 
     def addAuthor(author: Author): Unit = {
+        // TODO !!!!!!
+        val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
         authorInsertStatement.setLong(1, author.id);
         authorInsertStatement.setString(2, author.name);
-        authorInsertStatement.setString(3, if (author.org.isDefined) author.org.get else "NULL");
+        if (author.org.isDefined) {
+            authorInsertStatement.setString(3, author.org.get);
+        } else {
+            authorInsertStatement.setNull(3, 0);
+        }
         authorInsertStatement.executeUpdate();
     }
 }

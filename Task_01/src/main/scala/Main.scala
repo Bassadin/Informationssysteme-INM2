@@ -14,7 +14,6 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 object Main {
 
     import MyJsonProtocol._
-
     final val JSON_PATH: String = "./src/data/dblp.v12.json";
 
 
