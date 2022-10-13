@@ -1,5 +1,5 @@
 
-import java.sql.DriverManager
+import java.sql.{DriverManager, PreparedStatement}
 
 
 object DatabaseManager {
@@ -66,10 +66,10 @@ object DatabaseManager {
         dbConnection.close;
     }
 
-
     def addAuthor(author: Author): Unit = {
         // TODO !!!!!!
         val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
+
         authorInsertStatement.setLong(1, author.id);
         authorInsertStatement.setString(2, author.name);
         if (author.org.isDefined) {
@@ -77,6 +77,34 @@ object DatabaseManager {
         } else {
             authorInsertStatement.setNull(3, 0);
         }
+        authorInsertStatement.executeUpdate();
+    }
+
+    def addArticle(articleToAdd: Article) = {
+        // TODO !!!!!!
+        val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        authorInsertStatement.setLong(1, articleToAdd.id);
+        authorInsertStatement.setString(2, articleToAdd.title);
+        authorInsertStatement.setInt(3, articleToAdd.year);
+        authorInsertStatement.setInt(4, articleToAdd.n_citation);
+        authorInsertStatement.setString(5, articleToAdd.page_start);
+        authorInsertStatement.setString(6, articleToAdd.page_end);
+        if (articleToAdd.doc_type.isDefined) {
+            authorInsertStatement.setString(7, articleToAdd.doc_type.get);
+        } else {
+            authorInsertStatement.setNull(7, 0);
+        }
+        authorInsertStatement.setString(8, articleToAdd.publisher);
+        authorInsertStatement.setString(9, articleToAdd.volume);
+        authorInsertStatement.setString(10, articleToAdd.issue);
+
+        if (articleToAdd.DOI.isDefined) {
+            authorInsertStatement.setString(11, articleToAdd.DOI.get);
+        } else {
+            authorInsertStatement.setNull(11, 0);
+        }
+
         authorInsertStatement.executeUpdate();
     }
 }
