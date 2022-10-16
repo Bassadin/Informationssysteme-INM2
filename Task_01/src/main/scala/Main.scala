@@ -79,7 +79,7 @@ object Main {
             }
 
             if (parsedArticle.references.isDefined) {
-                // TODO !
+                // TODO wie Problem mit FK constraint lösen?
                  DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
             }
 
