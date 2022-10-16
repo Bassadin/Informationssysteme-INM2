@@ -20,7 +20,10 @@ object Main {
     val debugMode = true;
 
     def main(args: Array[String]): Unit = {
-        println("Starting...")
+        println("Deleting old db...");
+        new File(DB_PATH).delete()
+
+        println("Starting...");
 
         //        if (debugMode) {
         //            println(s"Amount of line in file: ${io.Source.fromFile(JSON_PATH).getLines.size}");
