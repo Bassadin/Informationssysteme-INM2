@@ -34,12 +34,6 @@ object DatabaseManager {
               );""";
         createDBTablesStatement.execute(createArticlesSqlString);
 
-        val createReferencesSqlString =
-            """CREATE TABLE IF NOT EXISTS references (
-              reference_id INT PRIMARY KEY NOT NULL
-              );""";
-        createDBTablesStatement.execute(createReferencesSqlString);
-
 //              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
 //              FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id),
         val createArticlesReferencesSqlString =
