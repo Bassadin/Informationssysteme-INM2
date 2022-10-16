@@ -75,15 +75,20 @@ object Main {
             
             // Print a status message every 10k lines
             if (indexNumber % 10000 == 0) {
-                println("Parsed line " + indexNumber);
+                println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + printCurrentTimeFrom(timeBeforeJson));
             }
         };
 
-        val timeAfterJson = System.nanoTime();
-
-        println("Elapsed time: " + (timeAfterJson - timeBeforeJson) / 1000000000 + "s");
-
         DatabaseManager.closeConnection;
+
+        println("Total elaspsed time: " + printCurrentTimeFrom(timeBeforeJson));
+
         println("Terminated.");
+    }
+
+    def printCurrentTimeFrom(startTime: Long): String = {
+        val currentTime = System.nanoTime();
+        // https://stackoverflow.com/a/12682507/3526350
+        return String.format("%,d", (currentTime - startTime) / 1000000000) + "s";
     }
 }
