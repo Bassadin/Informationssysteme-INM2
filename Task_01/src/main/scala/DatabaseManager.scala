@@ -44,10 +44,10 @@ object DatabaseManager {
             """CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               referencing_article_id INT NOT NULL,
-              FOREIGN KEY (article_from_id) REFERENCES articles(article_id),
+              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
               referenced_article_id INT NOT NULL,
-              FOREIGN KEY (article_to_id) REFERENCES articles(article_id),
-              CHECK (article_from_id!=article_to_id)
+              FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id),
+              CHECK (referencing_article_id!=referenced_article_id)
               );""";
         createDBTablesStatement.execute(createArticlesReferencesSqlString);
 
@@ -69,7 +69,7 @@ object DatabaseManager {
     }
 
     // Article relationships
-    val articleRelationInsertStatement = dbConnection.prepareStatement("MERGE INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
+    val articleRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
 
     def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
         authorRelationInsertStatement.setLong(1, referencingArticle.id);
@@ -85,7 +85,7 @@ object DatabaseManager {
     }
 
     // Author relationships
-    val authorRelationInsertStatement = dbConnection.prepareStatement("MERGE INTO articles_authors (article_id, author_id) VALUES (?, ?)");
+    val authorRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)");
 
     def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
 
