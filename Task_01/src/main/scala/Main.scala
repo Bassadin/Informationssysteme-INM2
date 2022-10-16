@@ -62,7 +62,7 @@ object Main {
                 return;
             }
 
-            // https://stackoverflow.com/a/5462747/3526350
+            val normalizedLineString: String = eachLineString.replace("\uFFFF", "");
             val normalizedLineString: String = Normalizer.normalize(eachLineString, Normalizer.Form.NFKC);
 
             val cleanedLineString: String = normalizedLineString.replaceFirst("^,", "");
