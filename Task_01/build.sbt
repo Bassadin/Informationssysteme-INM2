@@ -12,3 +12,6 @@ libraryDependencies += "com.h2database" % "h2" % "2.1.210"
 
 // https://mvnrepository.com/artifact/io.spray/spray-json
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
+
+libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.10"
+
