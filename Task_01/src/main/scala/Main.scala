@@ -8,7 +8,7 @@ case class Author(id: Long, name: String, org: Option[String]);
 
 case class Article(
                       id: Long,
-                      authors: List[Author],
+                      authors: Option[List[Author]],
                       title: String,
                       year: Int,
                       n_citation: Int,
@@ -19,7 +19,7 @@ case class Article(
                       volume: String,
                       issue: String,
                       DOI: Option[String],
-                      references: List[Long]);
+                      references: Option[List[Long]]);
 
 object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val authorFormat = jsonFormat(Author, "id", "name", "org")
@@ -63,16 +63,20 @@ object Main {
             }
 
             val normalizedLineString: String = eachLineString.replace("\uFFFF", "");
-            val normalizedLineString: String = Normalizer.normalize(eachLineString, Normalizer.Form.NFKC);
-
             val cleanedLineString: String = normalizedLineString.replaceFirst("^,", "");
             val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
-            DatabaseManager.addAuthors(parsedArticle.authors);
             DatabaseManager.addArticle(parsedArticle);
-            DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors);
-            DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references);
-            
+
+            if (parsedArticle.authors.isDefined) {
+                DatabaseManager.addAuthors(parsedArticle.authors.get);
+                DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors.get);
+            }
+
+            if (parsedArticle.references.isDefined) {
+                // DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references);
+            }
+
             // Print a status message every 10k lines
             if (indexNumber % 10000 == 0) {
                 println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + printCurrentTimeFrom(timeBeforeJson));
