@@ -1,46 +1,10 @@
 import Helpers.{getCurrentTimeStringFrom}
 
 import scala.io.Source
-import spray.json._
 
-case class Author(id: Long, name: String, org: Option[String]);
-
-case class Article(
-                      id: Long,
-                      authors: Option[List[Author]],
-                      title: String,
-                      year: Int,
-                      n_citation: Int,
-                      page_start: String,
-                      page_end: String,
-                      doc_type: Option[String],
-                      publisher: String,
-                      volume: String,
-                      issue: String,
-                      DOI: Option[String],
-                      references: Option[List[Long]]);
-
-object MyJsonProtocol extends DefaultJsonProtocol {
-    implicit val authorFormat = jsonFormat(Author, "id", "name", "org")
-    implicit val articleFormat = jsonFormat(
-        Article, "id",
-        "authors",
-        "title",
-        "year",
-        "n_citation",
-        "page_start",
-        "page_end",
-        "doc_type",
-        "publisher",
-        "volume",
-        "issue",
-        "DOI",
-        "references")
-}
+import MyJsonProtocol._
 
 object Main {
-
-    import MyJsonProtocol._
 
     val JSON_PATH: String = "./src/data/dblp.v12.json";
 
