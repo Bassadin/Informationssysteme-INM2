@@ -85,7 +85,7 @@ object Main {
 
         DatabaseManager.closeConnection;
 
-        println("Total elaspsed time: " + printCurrentTimeFrom(timeBeforeJson));
+        println("Total elapsed time: " + printCurrentTimeFrom(timeBeforeJson));
 
         println("Terminated.");
     }
