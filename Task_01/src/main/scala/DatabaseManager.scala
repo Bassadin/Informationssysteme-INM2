@@ -5,6 +5,9 @@ import java.sql.{DriverManager, PreparedStatement}
 object DatabaseManager {
     val dbConnection = DriverManager.getConnection("jdbc:h2:./demo");
 
+    // Call this right away so that the databases are initialized for the prepared statements later
+    this.createDatabases;
+
     def createDatabases: Unit = {
         val createDBTablesStatement = dbConnection.createStatement();
         val createAuthorsSqlString =
@@ -40,9 +43,9 @@ object DatabaseManager {
         val createArticlesReferencesSqlString =
             """CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-              article_from_id INT NOT NULL,
+              referencing_article_id INT NOT NULL,
               FOREIGN KEY (article_from_id) REFERENCES articles(article_id),
-              article_to_id INT NOT NULL,
+              referenced_article_id INT NOT NULL,
               FOREIGN KEY (article_to_id) REFERENCES articles(article_id),
               CHECK (article_from_id!=article_to_id)
               );""";
@@ -51,24 +54,58 @@ object DatabaseManager {
         val createArticlesAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS articles_authors (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-              article_id INT NOT NULL,
+              article_id BIGINT NOT NULL,
               FOREIGN KEY (article_id) REFERENCES articles(article_id),
-              author_id INT NOT NULL,
+              author_id BIGINT NOT NULL,
               FOREIGN KEY (author_id) REFERENCES authors(author_id)
               );""";
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
-
     }
 
     def closeConnection: Unit = {
         dbConnection.close;
     }
 
+    // Article relationships
+    val articleRelationInsertStatement = dbConnection.prepareStatement("MERGE INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
+
+    def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
+        authorRelationInsertStatement.setLong(1, referencingArticle.id);
+        authorRelationInsertStatement.setLong(2, referencedArticleId);
+
+        authorRelationInsertStatement.executeUpdate();
+    }
+
+    def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
+        referencedArticles.foreach(eachArticle => {
+            this.addArticleToArticleRelation(referencingArticle, eachArticle);
+        })
+    }
+
+    // Author relationships
+    val authorRelationInsertStatement = dbConnection.prepareStatement("MERGE INTO articles_authors (article_id, author_id) VALUES (?, ?)");
+
+    def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
+
+        authorRelationInsertStatement.setLong(1, article.id);
+        authorRelationInsertStatement.setLong(2, author.id);
+
+        authorRelationInsertStatement.executeUpdate();
+    }
+
+    def addArticleToAuthorsRelation(article: Article, authors: List[Author]): Unit = {
+        authors.foreach(eachAuthor => {
+            this.addArticleToAuthorRelation(article, eachAuthor);
+        })
+    }
+
+    // Authors
+    val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
+
     def addAuthor(author: Author): Unit = {
-        // TODO !!!!!!
-        val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
+
 
         authorInsertStatement.setLong(1, author.id);
         authorInsertStatement.setString(2, author.name);
@@ -80,31 +117,39 @@ object DatabaseManager {
         authorInsertStatement.executeUpdate();
     }
 
-    def addArticle(articleToAdd: Article) = {
-        // TODO !!!!!!
-        val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    def addAuthors(authorsToAdd: List[Author]): Unit = {
+        authorsToAdd.foreach(eachAuthor => {
+            this.addAuthor(eachAuthor);
+        })
+    }
 
-        authorInsertStatement.setLong(1, articleToAdd.id);
-        authorInsertStatement.setString(2, articleToAdd.title);
-        authorInsertStatement.setInt(3, articleToAdd.year);
-        authorInsertStatement.setInt(4, articleToAdd.n_citation);
-        authorInsertStatement.setString(5, articleToAdd.page_start);
-        authorInsertStatement.setString(6, articleToAdd.page_end);
+
+    // Articles
+    val articleInsertStatement = dbConnection.prepareStatement("MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    def addArticle(articleToAdd: Article) = {
+
+        articleInsertStatement.setLong(1, articleToAdd.id);
+        articleInsertStatement.setString(2, articleToAdd.title);
+        articleInsertStatement.setInt(3, articleToAdd.year);
+        articleInsertStatement.setInt(4, articleToAdd.n_citation);
+        articleInsertStatement.setString(5, articleToAdd.page_start);
+        articleInsertStatement.setString(6, articleToAdd.page_end);
         if (articleToAdd.doc_type.isDefined) {
-            authorInsertStatement.setString(7, articleToAdd.doc_type.get);
+            articleInsertStatement.setString(7, articleToAdd.doc_type.get);
         } else {
-            authorInsertStatement.setNull(7, 0);
+            articleInsertStatement.setNull(7, 0);
         }
-        authorInsertStatement.setString(8, articleToAdd.publisher);
-        authorInsertStatement.setString(9, articleToAdd.volume);
-        authorInsertStatement.setString(10, articleToAdd.issue);
+        articleInsertStatement.setString(8, articleToAdd.publisher);
+        articleInsertStatement.setString(9, articleToAdd.volume);
+        articleInsertStatement.setString(10, articleToAdd.issue);
 
         if (articleToAdd.DOI.isDefined) {
-            authorInsertStatement.setString(11, articleToAdd.DOI.get);
+            articleInsertStatement.setString(11, articleToAdd.DOI.get);
         } else {
-            authorInsertStatement.setNull(11, 0);
+            articleInsertStatement.setNull(11, 0);
         }
 
-        authorInsertStatement.executeUpdate();
+        articleInsertStatement.executeUpdate();
     }
 }

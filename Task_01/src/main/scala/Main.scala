@@ -18,7 +18,8 @@ case class Article(
                       publisher: String,
                       volume: String,
                       issue: String,
-                      DOI: Option[String]);
+                      DOI: Option[String],
+                      references: List[Long]);
 
 object MyJsonProtocol extends DefaultJsonProtocol {
     implicit val authorFormat = jsonFormat(Author, "id", "name", "org")
@@ -34,7 +35,8 @@ object MyJsonProtocol extends DefaultJsonProtocol {
         "publisher",
         "volume",
         "issue",
-        "DOI")
+        "DOI",
+        "references")
 }
 
 object Main {
@@ -46,7 +48,6 @@ object Main {
 
     def main(args: Array[String]): Unit = {
         println("Starting...")
-        DatabaseManager.createDatabases;
 
         val timeBeforeJson = System.nanoTime();
 
@@ -67,14 +68,11 @@ object Main {
             val cleanedLineString: String = normalizedLineString.replaceFirst("^,", "");
             val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
-            parsedArticle.authors.foreach(eachAuthor => {
-                DatabaseManager.addAuthor(eachAuthor);
-            })
-
+            DatabaseManager.addAuthors(parsedArticle.authors);
             DatabaseManager.addArticle(parsedArticle);
-
-            // TODO also add relations
-
+            DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors);
+            DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references);
+            
             // Print a status message every 10k lines
             if (indexNumber % 10000 == 0) {
                 println("Parsed line " + indexNumber);
