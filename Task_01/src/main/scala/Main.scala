@@ -1,21 +1,35 @@
-import Helpers.{getCurrentTimeStringFrom}
+import Helpers.getCurrentTimeStringFrom
+import com.github.tototoshi.csv._
+import spray.json._
 
+import java.io.File
 import scala.io.Source
-
 import MyJsonProtocol._
 
-object Main {
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Date
 
-    val JSON_PATH: String = "./src/data/dblp.v12.json";
+object Main {
+    val dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm")
+
+    val JSON_PATH = "./src/data/dblp.v12.json";
+    val DB_PATH = "./demo.mv.db"
+    val CSV_MEASUREMENT_PATH = s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
 
     val debugMode = true;
 
     def main(args: Array[String]): Unit = {
         println("Starting...")
 
-//        if (debugMode) {
-//            println(s"Amount of line in file: ${io.Source.fromFile(JSON_PATH).getLines.size}");
-//        }
+        //        if (debugMode) {
+        //            println(s"Amount of line in file: ${io.Source.fromFile(JSON_PATH).getLines.size}");
+        //        }
+
+        // CSV Stuff
+        val csvFile = new File(CSV_MEASUREMENT_PATH);
+        val csvWriter = CSVWriter.open(csvFile);
+        csvWriter.writeRow(List("elapsed_time_millis", "stored_entries"));
 
         val timeBeforeJson = System.currentTimeMillis();
 
@@ -44,15 +58,17 @@ object Main {
 
             if (parsedArticle.references.isDefined) {
                 // TODO wie Problem mit FK constraint lösen?
-                 DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
+                DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
             }
 
-            // Print a status message every 10k lines
-            if (debugMode && indexNumber % 10000 == 0) {
+            // Print a status message every 50k lines
+            if (debugMode && indexNumber % 50000 == 0) {
                 println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + getCurrentTimeStringFrom(timeBeforeJson));
+                csvWriter.writeRow(List(System.currentTimeMillis() - timeBeforeJson, indexNumber));
             }
         };
 
+        csvWriter.close();
         DatabaseManager.closeConnection;
 
         println("Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson));
