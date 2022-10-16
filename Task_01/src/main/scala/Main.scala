@@ -17,8 +17,6 @@ object Main {
     val DB_PATH = "./demo.mv.db"
     val CSV_MEASUREMENT_PATH = s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
 
-    val debugMode = true;
-
     def main(args: Array[String]): Unit = {
         println("Deleting old db...");
         new File(DB_PATH).delete()
@@ -65,7 +63,7 @@ object Main {
             }
 
             // Print a status message every 50k lines
-            if (debugMode && indexNumber % 50000 == 0) {
+            if (indexNumber % 50000 == 0) {
                 println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + getCurrentTimeStringFrom(timeBeforeJson));
                 csvWriter.writeRow(List(System.currentTimeMillis() - timeBeforeJson, indexNumber));
             }
