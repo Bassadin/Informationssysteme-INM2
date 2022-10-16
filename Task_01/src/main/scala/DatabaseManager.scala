@@ -21,7 +21,7 @@ object DatabaseManager {
         val createArticlesSqlString =
             """CREATE TABLE IF NOT EXISTS articles (
               article_id BIGINT NOT NULL PRIMARY KEY,
-              title VARCHAR(500) NOT NULL,
+              title VARCHAR(800) NOT NULL,
               `year` INT NOT NULL,
               n_citation INT NOT NULL,
               page_start VARCHAR(20) NOT NULL,
@@ -40,22 +40,22 @@ object DatabaseManager {
               );""";
         createDBTablesStatement.execute(createReferencesSqlString);
 
+//              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
+//              FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id),
         val createArticlesReferencesSqlString =
             """CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-              referencing_article_id INT NOT NULL,
-              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
-              referenced_article_id INT NOT NULL,
-              FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id),
+              referencing_article_id BIGINT NOT NULL,
+              referenced_article_id BIGINT NOT NULL,
               CHECK (referencing_article_id!=referenced_article_id)
               );""";
         createDBTablesStatement.execute(createArticlesReferencesSqlString);
 
+//              FOREIGN KEY (article_id) REFERENCES articles(article_id),
         val createArticlesAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS articles_authors (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               article_id BIGINT NOT NULL,
-              FOREIGN KEY (article_id) REFERENCES articles(article_id),
               author_id BIGINT NOT NULL,
               FOREIGN KEY (author_id) REFERENCES authors(author_id)
               );""";
@@ -72,10 +72,10 @@ object DatabaseManager {
     val articleRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
 
     def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
-        authorRelationInsertStatement.setLong(1, referencingArticle.id);
-        authorRelationInsertStatement.setLong(2, referencedArticleId);
+        articleRelationInsertStatement.setLong(1, referencingArticle.id);
+        articleRelationInsertStatement.setLong(2, referencedArticleId);
 
-        authorRelationInsertStatement.executeUpdate();
+        articleRelationInsertStatement.executeUpdate();
     }
 
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
@@ -88,7 +88,6 @@ object DatabaseManager {
     val authorRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)");
 
     def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
-
         authorRelationInsertStatement.setLong(1, article.id);
         authorRelationInsertStatement.setLong(2, author.id);
 
@@ -105,8 +104,6 @@ object DatabaseManager {
     val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
 
     def addAuthor(author: Author): Unit = {
-
-
         authorInsertStatement.setLong(1, author.id);
         authorInsertStatement.setString(2, author.name);
         if (author.org.isDefined) {

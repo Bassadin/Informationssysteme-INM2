@@ -1,8 +1,7 @@
+import Helpers.{getCurrentTimeStringFrom}
+
 import scala.io.Source
 import spray.json._
-
-import java.text.Normalizer
-import scala.util.control.Breaks.break
 
 case class Author(id: Long, name: String, org: Option[String]);
 
@@ -43,27 +42,33 @@ object Main {
 
     import MyJsonProtocol._
 
-    final val JSON_PATH: String = "./src/data/dblp.v12.json";
+    val JSON_PATH: String = "./src/data/dblp.v12.json";
 
+    val debugMode = true;
 
     def main(args: Array[String]): Unit = {
         println("Starting...")
 
-        val timeBeforeJson = System.nanoTime();
+//        if (debugMode) {
+//            println(s"Amount of line in file: ${io.Source.fromFile(JSON_PATH).getLines.size}");
+//        }
 
-        // JSON stuff
-        val fileLines = Source.fromFile(JSON_PATH).getLines();
+        val timeBeforeJson = System.currentTimeMillis();
+
+        val jsonFileLinesIterator = Source.fromFile(JSON_PATH).getLines;
 
         // Skip first line, it only contains a [
-        fileLines.next();
+        jsonFileLinesIterator.next();
 
-        fileLines.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
+        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
+            // Terminate for last line
             if (eachLineString.charAt(0) == ']') {
                 return;
             }
 
-            val normalizedLineString: String = eachLineString.replace("\uFFFF", "");
-            val cleanedLineString: String = normalizedLineString.replaceFirst("^,", "");
+            val cleanedLineString = eachLineString
+                .replace("\uFFFF", "")
+                .replaceFirst("^,", "");
             val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
             DatabaseManager.addArticle(parsedArticle);
@@ -74,25 +79,19 @@ object Main {
             }
 
             if (parsedArticle.references.isDefined) {
-                // DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references);
+                // TODO !
+                 DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
             }
 
             // Print a status message every 10k lines
-            if (indexNumber % 10000 == 0) {
-                println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + printCurrentTimeFrom(timeBeforeJson));
+            if (debugMode && indexNumber % 10000 == 0) {
+                println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + getCurrentTimeStringFrom(timeBeforeJson));
             }
         };
 
         DatabaseManager.closeConnection;
 
-        println("Total elapsed time: " + printCurrentTimeFrom(timeBeforeJson));
-
+        println("Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson));
         println("Terminated.");
-    }
-
-    def printCurrentTimeFrom(startTime: Long): String = {
-        val currentTime = System.nanoTime();
-        // https://stackoverflow.com/a/12682507/3526350
-        return String.format("%,d", (currentTime - startTime) / 1000000000) + "s";
     }
 }
