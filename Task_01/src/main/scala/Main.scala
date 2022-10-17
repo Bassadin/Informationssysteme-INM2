@@ -46,7 +46,7 @@ object Main {
             }
 
             val cleanedLineString = eachLineString
-                .replace("\uFFFF", "")
+                .replace("\uFFFF", "?")
                 .replaceFirst("^,", "");
             val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
