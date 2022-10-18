@@ -109,7 +109,12 @@ object DatabaseManager {
     def addAuthor(authorToAdd: Author): Unit = {
         authorInsertStatement.setLong(1, authorToAdd.id);
         authorInsertStatement.setString(2, authorToAdd.name);
-        authorInsertStatement.setString(3, authorToAdd.org);
+
+        authorToAdd.org match {
+            case Some(i) => authorInsertStatement.setString(3, i)
+            case None => authorInsertStatement.setNull(3, 0)
+        }
+
         authorInsertStatement.executeUpdate();
     }
 
