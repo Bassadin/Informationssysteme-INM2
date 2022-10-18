@@ -71,6 +71,9 @@ object Main {
             }
         };
 
+        // Enable article refs FK check
+        DatabaseManager.enableArticleRefsForeignKeyCheck();
+
         csvWriter.close();
         DatabaseManager.closeConnection;
         jsonFileSource.close();

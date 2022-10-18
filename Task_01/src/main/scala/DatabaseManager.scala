@@ -36,23 +36,22 @@ object DatabaseManager {
               );""";
         createDBTablesStatement.execute(createArticlesSqlString);
 
-//              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
-//              FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id),
         val createArticlesReferencesSqlString =
             """CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-              referencing_article_id BIGINT NOT NULL,
+              referencing_article_id BIGINT NOT NULL ,
               referenced_article_id BIGINT NOT NULL,
+              FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
               CHECK (referencing_article_id!=referenced_article_id)
               );""";
         createDBTablesStatement.execute(createArticlesReferencesSqlString);
 
-//              FOREIGN KEY (article_id) REFERENCES articles(article_id),
         val createArticlesAuthorsSqlString =
             """CREATE TABLE IF NOT EXISTS articles_authors (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               article_id BIGINT NOT NULL,
               author_id BIGINT NOT NULL,
+              FOREIGN KEY (article_id) REFERENCES articles(article_id),
               FOREIGN KEY (author_id) REFERENCES authors(author_id)
               );""";
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
@@ -144,5 +143,18 @@ object DatabaseManager {
         }
 
         articleInsertStatement.executeUpdate();
+    }
+
+    def enableArticleRefsForeignKeyCheck(): Unit = {
+        val alterForeignKeyStatement = dbConnection.createStatement();
+
+        val alterForeignKeySQLString =
+            """
+              ALTER TABLE articles_references
+              ADD FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id);
+            """;
+
+        alterForeignKeyStatement.execute(alterForeignKeySQLString);
+        alterForeignKeyStatement.close();
     }
 }
