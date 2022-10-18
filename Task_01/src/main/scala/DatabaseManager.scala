@@ -13,15 +13,18 @@ object DatabaseManager {
     def createDatabases: Unit = {
         val createDBTablesStatement = dbConnection.createStatement();
         val createAuthorsSqlString =
-            """CREATE TABLE IF NOT EXISTS authors (
+            """
+              CREATE TABLE IF NOT EXISTS authors (
               author_id BIGINT NOT NULL PRIMARY KEY,
               name VARCHAR(200) NOT NULL,
               org VARCHAR(500)
-              );""";
+              );
+            """;
         createDBTablesStatement.execute(createAuthorsSqlString);
 
         val createArticlesSqlString =
-            """CREATE TABLE IF NOT EXISTS articles (
+            """
+              CREATE TABLE IF NOT EXISTS articles (
               article_id BIGINT NOT NULL PRIMARY KEY,
               title VARCHAR(800) NOT NULL,
               `year` INT NOT NULL,
@@ -33,27 +36,32 @@ object DatabaseManager {
               volume VARCHAR(30) NOT NULL,
               issue VARCHAR(30) NOT NULL,
               doi VARCHAR(40)
-              );""";
+              );
+            """;
         createDBTablesStatement.execute(createArticlesSqlString);
 
         val createArticlesReferencesSqlString =
-            """CREATE TABLE IF NOT EXISTS articles_references (
+            """
+              CREATE TABLE IF NOT EXISTS articles_references (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               referencing_article_id BIGINT NOT NULL ,
               referenced_article_id BIGINT NOT NULL,
               FOREIGN KEY (referencing_article_id) REFERENCES articles(article_id),
               CHECK (referencing_article_id!=referenced_article_id)
-              );""";
+              );
+            """;
         createDBTablesStatement.execute(createArticlesReferencesSqlString);
 
         val createArticlesAuthorsSqlString =
-            """CREATE TABLE IF NOT EXISTS articles_authors (
+            """
+              CREATE TABLE IF NOT EXISTS articles_authors (
               id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
               article_id BIGINT NOT NULL,
               author_id BIGINT NOT NULL,
               FOREIGN KEY (article_id) REFERENCES articles(article_id),
               FOREIGN KEY (author_id) REFERENCES authors(author_id)
-              );""";
+              );
+            """;
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
