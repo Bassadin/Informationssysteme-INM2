@@ -19,8 +19,9 @@ object Main {
     val CSV_MEASUREMENT_PATH = s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
 
     def main(args: Array[String]): Unit = {
+        // DELETE OLD DB
         println("Deleting old db...");
-        new File(DB_PATH).delete()
+        new File(DB_PATH).delete();
 
         println("Starting...");
 
