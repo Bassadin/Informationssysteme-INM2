@@ -73,7 +73,10 @@ object Main {
         };
 
         // Enable article refs FK check
+        val timeBeforeFKEnabling = System.currentTimeMillis();
+        println("Enabling FK checks...");
         DatabaseManager.enableArticleRefsForeignKeyCheck();
+        println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
 
         csvWriter.close();
         DatabaseManager.closeConnection;
