@@ -31,7 +31,7 @@ object DatabaseManager {
               n_citation INT NOT NULL,
               page_start VARCHAR(20) NOT NULL,
               page_end VARCHAR(20) NOT NULL,
-              doc_type VARCHAR(30),
+              doc_type VARCHAR(30) ,
               publisher VARCHAR(500) NOT NULL,
               volume VARCHAR(30) NOT NULL,
               issue VARCHAR(30) NOT NULL,
@@ -106,14 +106,10 @@ object DatabaseManager {
     // Authors
     val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
 
-    def addAuthor(author: Author): Unit = {
-        authorInsertStatement.setLong(1, author.id);
-        authorInsertStatement.setString(2, author.name);
-        if (author.org.isDefined) {
-            authorInsertStatement.setString(3, author.org.get);
-        } else {
-            authorInsertStatement.setNull(3, 0);
-        }
+    def addAuthor(authorToAdd: Author): Unit = {
+        authorInsertStatement.setLong(1, authorToAdd.id);
+        authorInsertStatement.setString(2, authorToAdd.name);
+        authorInsertStatement.setString(3, authorToAdd.org);
         authorInsertStatement.executeUpdate();
     }
 
@@ -135,19 +131,19 @@ object DatabaseManager {
         articleInsertStatement.setInt(4, articleToAdd.n_citation);
         articleInsertStatement.setString(5, articleToAdd.page_start);
         articleInsertStatement.setString(6, articleToAdd.page_end);
-        if (articleToAdd.doc_type.isDefined) {
-            articleInsertStatement.setString(7, articleToAdd.doc_type.get);
-        } else {
-            articleInsertStatement.setNull(7, 0);
+
+        articleToAdd.doc_type match {
+            case Some(i) => articleInsertStatement.setString(7, i)
+            case None => articleInsertStatement.setNull(7, 0)
         }
+
         articleInsertStatement.setString(8, articleToAdd.publisher);
         articleInsertStatement.setString(9, articleToAdd.volume);
         articleInsertStatement.setString(10, articleToAdd.issue);
 
-        if (articleToAdd.DOI.isDefined) {
-            articleInsertStatement.setString(11, articleToAdd.DOI.get);
-        } else {
-            articleInsertStatement.setNull(11, 0);
+        articleToAdd.DOI match {
+            case Some(i) => articleInsertStatement.setString(11, articleToAdd.DOI.get);
+            case None => articleInsertStatement.setNull(11, 0);
         }
 
         articleInsertStatement.executeUpdate();
