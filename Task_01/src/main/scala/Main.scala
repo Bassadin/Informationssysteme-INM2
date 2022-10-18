@@ -1,13 +1,14 @@
 import Helpers.getCurrentTimeStringFrom
+import JsonDefinitions.Article
 import com.github.tototoshi.csv._
 import spray.json._
 
 import java.io.File
 import scala.io.Source
-import MyJsonProtocol._
+
+import JsonDefinitions.ArticleProtocol._;
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Date
 
 object Main {

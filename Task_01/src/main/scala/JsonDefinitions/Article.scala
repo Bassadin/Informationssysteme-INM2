@@ -1,6 +1,6 @@
-import spray.json.{DefaultJsonProtocol, RootJsonFormat}
+package JsonDefinitions
 
-case class Author(id: Long, name: String, org: Option[String]);
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class Article(
                       id: Long,
@@ -17,13 +17,8 @@ case class Article(
                       DOI: Option[String],
                       references: Option[List[Long]]);
 
-object MyJsonProtocol extends DefaultJsonProtocol {
-    implicit val authorFormat: RootJsonFormat[Author] = jsonFormat(
-        Author,
-        "id",
-        "name",
-        "org"
-    )
+import AuthorProtocol._;
+object ArticleProtocol extends DefaultJsonProtocol {
     implicit val articleFormat: RootJsonFormat[Article] = jsonFormat(
         Article,
         "id",

@@ -1,4 +1,6 @@
 
+import JsonDefinitions.{Article, Author}
+
 import java.sql.{DriverManager, PreparedStatement}
 
 
@@ -62,7 +64,7 @@ object DatabaseManager {
         dbConnection.close;
     }
 
-    // Article relationships
+    // JsonDefinitions.Article relationships
     val articleRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
 
     def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
@@ -78,7 +80,7 @@ object DatabaseManager {
         })
     }
 
-    // Author relationships
+    // JsonDefinitions.Author relationships
     val authorRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)");
 
     def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
