@@ -34,7 +34,8 @@ object Main {
 
         val timeBeforeJson = System.currentTimeMillis();
 
-        val jsonFileLinesIterator = Source.fromFile(JSON_PATH).getLines;
+        val jsonFileSource = Source.fromFile(JSON_PATH);
+        val jsonFileLinesIterator = jsonFileSource.getLines;
 
         // Skip first line, it only contains a [
         jsonFileLinesIterator.next();
@@ -71,6 +72,7 @@ object Main {
 
         csvWriter.close();
         DatabaseManager.closeConnection;
+        jsonFileSource.close();
 
         println("Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson));
         println("Terminated.");
