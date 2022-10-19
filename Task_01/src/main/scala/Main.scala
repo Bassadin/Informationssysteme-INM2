@@ -71,6 +71,7 @@ object Main {
                 csvWriter.writeRow(List(System.currentTimeMillis() - timeBeforeJson, indexNumber));
             }
         };
+        println("Finished parsing JSON file.");
 
         // Enable article refs FK check
         val timeBeforeFKEnabling = System.currentTimeMillis();
