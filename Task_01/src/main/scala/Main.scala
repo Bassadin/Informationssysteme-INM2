@@ -45,7 +45,7 @@ object Main {
         jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
             // Terminate for last line
             if (eachLineString.charAt(0) == ']') {
-                return;
+                break;
             }
 
             val cleanedLineString = eachLineString
