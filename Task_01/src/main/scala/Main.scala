@@ -5,8 +5,7 @@ import spray.json._
 
 import java.io.File
 import scala.io.Source
-
-import JsonDefinitions.ArticleProtocol._;
+import JsonDefinitions.ArticleProtocol._
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -16,7 +15,10 @@ object Main {
 
     val JSON_PATH = "./src/data/dblp.v12.json";
     val DB_PATH = "./demo.mv.db"
-    val CSV_MEASUREMENT_PATH = s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
+    val CSV_MEASUREMENT_PATH =
+        s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
+
+    val timeBeforeJson = System.currentTimeMillis();
 
     def main(args: Array[String]): Unit = {
         // DELETE OLD DB
@@ -25,16 +27,11 @@ object Main {
 
         println("Starting...");
 
-        //        if (debugMode) {
-        //            println(s"Amount of line in file: ${io.Source.fromFile(JSON_PATH).getLines.size}");
-        //        }
-
         // CSV Stuff
+        println("Opening csv file for time logging");
         val csvFile = new File(CSV_MEASUREMENT_PATH);
         val csvWriter = CSVWriter.open(csvFile);
         csvWriter.writeRow(List("elapsed_time_millis", "stored_entries"));
-
-        val timeBeforeJson = System.currentTimeMillis();
 
         val jsonFileSource = Source.fromFile(JSON_PATH);
         val jsonFileLinesIterator = jsonFileSource.getLines;
@@ -42,48 +39,76 @@ object Main {
         // Skip first line, it only contains a [
         jsonFileLinesIterator.next();
 
-        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
-            // Terminate for last line
-            if (eachLineString.charAt(0) == ']') {
-                break;
-            }
+        // Use zipwithindex to get an index iterator alongside the elements
+        jsonFileLinesIterator.zipWithIndex.foreach {
+            case (eachLineString, indexNumber) =>
+                handleLineString(eachLineString, indexNumber);
 
-            val cleanedLineString = eachLineString
-                .replace("\uFFFF", "?")
-                .replaceFirst("^,", "");
-            val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
+                // Print a status message every 50k lines
+                if (indexNumber % 50000 == 0) {
+                    val indexNumberPrintString = String.format(
+                      "%,d",
+                      indexNumber
+                    );
+                    println(
+                      s"Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(timeBeforeJson)}"
+                    );
 
-            DatabaseManager.addArticle(parsedArticle);
-
-            if (parsedArticle.authors.isDefined) {
-                DatabaseManager.addAuthors(parsedArticle.authors.get);
-                DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors.get);
-            }
-
-            if (parsedArticle.references.isDefined) {
-                // TODO wie Problem mit FK constraint lösen?
-                DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
-            }
-
-            // Print a status message every 50k lines
-            if (indexNumber % 50000 == 0) {
-                println("Parsed line " + String.format("%,d", indexNumber) + " - Elapsed Time: " + getCurrentTimeStringFrom(timeBeforeJson));
-                csvWriter.writeRow(List(System.currentTimeMillis() - timeBeforeJson, indexNumber));
-            }
+                    val elapsedMillis =
+                        System.currentTimeMillis() - timeBeforeJson;
+                    csvWriter.writeRow(List(elapsedMillis, indexNumber));
+                }
         };
         println("Finished parsing JSON file.");
 
-        // Enable article refs FK check
+        // Enable article refs FK check after all data is inserted
         val timeBeforeFKEnabling = System.currentTimeMillis();
         println("Enabling FK checks...");
         DatabaseManager.enableArticleRefsForeignKeyCheck();
-        println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
+        println(
+          s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}."
+        );
 
         csvWriter.close();
         DatabaseManager.closeConnection;
         jsonFileSource.close();
 
-        println("Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson));
+        println(
+          "Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson)
+        );
         println("Terminated.");
+    }
+
+    def handleLineString(
+        eachLineString: String,
+        indexNumber: Int
+    ): Unit = {
+        // Terminate for last line
+        if (eachLineString.charAt(0) == ']') {
+            return;
+        }
+
+        val cleanedLineString = eachLineString
+            .replace("\uFFFF", "?")
+            .replaceFirst("^,", "");
+        val parsedArticle: Article =
+            cleanedLineString.parseJson.convertTo[Article];
+
+        DatabaseManager.addArticle(parsedArticle);
+
+        if (parsedArticle.authors.isDefined) {
+            DatabaseManager.addAuthors(parsedArticle.authors.get);
+            DatabaseManager.addArticleToAuthorsRelation(
+              parsedArticle,
+              parsedArticle.authors.get
+            );
+        }
+
+        if (parsedArticle.references.isDefined) {
+            DatabaseManager.addArticleToArticlesRelation(
+              parsedArticle,
+              parsedArticle.references.get
+            );
+        }
     }
 }
