@@ -124,7 +124,6 @@ object DatabaseManager {
         })
     }
 
-
     // Articles
     val articleInsertStatement = dbConnection.prepareStatement("MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
