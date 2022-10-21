@@ -39,10 +39,10 @@ object Main {
         // Skip first line, it only contains a [
         jsonFileLinesIterator.next();
 
-        // Use zipwithindex to get an index iterator alongside the elements
+        // Use zipWithIndex to get an index iterator alongside the elements
         jsonFileLinesIterator.zipWithIndex.foreach {
             case (eachLineString, indexNumber) =>
-                handleLineString(eachLineString, indexNumber);
+                handleLineString(eachLineString);
 
                 // Print a status message every 50k lines
                 if (indexNumber % 50000 == 0) {
@@ -74,21 +74,19 @@ object Main {
         jsonFileSource.close();
 
         println(
-          "Total elapsed time: " + getCurrentTimeStringFrom(timeBeforeJson)
+          s"Total elapsed time: ${getCurrentTimeStringFrom(timeBeforeJson)}"
         );
         println("Terminated.");
     }
 
-    def handleLineString(
-        eachLineString: String,
-        indexNumber: Int
-    ): Unit = {
+    def handleLineString(eachLineString: String): Unit = {
         // Terminate for last line
         if (eachLineString.charAt(0) == ']') {
             return;
         }
 
         val cleanedLineString = eachLineString
+            // Replace non-printable character with ?
             .replace("\uFFFF", "?")
             .replaceFirst("^,", "");
         val parsedArticle: Article =
