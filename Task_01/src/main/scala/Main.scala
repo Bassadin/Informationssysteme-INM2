@@ -50,7 +50,7 @@ object Main {
     }
 
     def handleLineString(eachLineString: String): Unit = {
-        // Terminate for last line
+        // Return for last line
         if (eachLineString.charAt(0) == ']') {
             return;
         }

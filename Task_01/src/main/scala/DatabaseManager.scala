@@ -78,23 +78,15 @@ object DatabaseManager {
       "INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)"
     );
 
-    def addArticleToArticleRelation(
-        referencingArticle: Article,
-        referencedArticleId: Long
-    ): Unit = {
+    def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
         articleRelationInsertStatement.setLong(1, referencingArticle.id);
         articleRelationInsertStatement.setLong(2, referencedArticleId);
 
         articleRelationInsertStatement.executeUpdate();
     }
 
-    def addArticleToArticlesRelation(
-        referencingArticle: Article,
-        referencedArticles: List[Long]
-    ): Unit = {
-        referencedArticles.foreach(eachArticle => {
-            this.addArticleToArticleRelation(referencingArticle, eachArticle);
-        })
+    def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
+        referencedArticles.foreach(eachArticle => this.addArticleToArticleRelation(referencingArticle, eachArticle))
     }
 
     // JsonDefinitions.Author relationships
@@ -113,9 +105,7 @@ object DatabaseManager {
         article: Article,
         authors: List[Author]
     ): Unit = {
-        authors.foreach(eachAuthor => {
-            this.addArticleToAuthorRelation(article, eachAuthor);
-        })
+        authors.foreach(eachAuthor => this.addArticleToAuthorRelation(article, eachAuthor));
     }
 
     // Authors
@@ -135,9 +125,7 @@ object DatabaseManager {
     }
 
     def addAuthors(authorsToAdd: List[Author]): Unit = {
-        authorsToAdd.foreach(eachAuthor => {
-            this.addAuthor(eachAuthor);
-        })
+        authorsToAdd.foreach(eachAuthor => this.addAuthor(eachAuthor))
     }
 
     // Articles
@@ -164,9 +152,8 @@ object DatabaseManager {
         articleInsertStatement.setString(10, articleToAdd.issue);
 
         articleToAdd.DOI match {
-            case Some(i) =>
-                articleInsertStatement.setString(11, articleToAdd.DOI.get);
-            case None => articleInsertStatement.setNull(11, 0);
+            case Some(i) => articleInsertStatement.setString(11, articleToAdd.DOI.get);
+            case None    => articleInsertStatement.setNull(11, 0);
         }
 
         articleInsertStatement.executeUpdate();
@@ -177,13 +164,10 @@ object DatabaseManager {
         println("Enabling FK checks...");
         val alterForeignKeyStatement = dbConnection.createStatement();
 
-        val alterForeignKeySQLString =
-            """
+        alterForeignKeyStatement.execute("""
               ALTER TABLE articles_references
               ADD FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id);
-            """;
-
-        alterForeignKeyStatement.execute(alterForeignKeySQLString);
+            """);
         alterForeignKeyStatement.close();
 
         println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
