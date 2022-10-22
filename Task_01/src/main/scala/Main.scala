@@ -10,9 +10,10 @@ object Main {
 
     val JSON_PATH = "./src/data/dblp.v12.json";
 
-    val timeBeforeJson = System.currentTimeMillis();
-
     def main(args: Array[String]): Unit = {
+        // Measure time before starting as reference timeframe
+        val timeBeforeJson = System.currentTimeMillis();
+
         // DELETE OLD DB
         DatabaseManager.deleteDBFile();
 
@@ -25,41 +26,26 @@ object Main {
         jsonFileLinesIterator.next();
 
         // Use zipWithIndex to get an index iterator alongside the elements
-        jsonFileLinesIterator.zipWithIndex.foreach {
-            case (eachLineString, indexNumber) =>
-                handleLineString(eachLineString);
+        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
+            handleLineString(eachLineString);
 
-                // Print a status message every 50k lines
-                if (indexNumber % 50000 == 0) {
-                    val indexNumberPrintString = String.format(
-                      "%,d",
-                      indexNumber
-                    );
-                    println(
-                      s"Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(timeBeforeJson)}"
-                    );
+            // Print a status message every 50k lines
+            if (indexNumber % 50000 == 0) {
+                Helpers.printElapsedTimeStatusMessage(indexNumber, timeBeforeJson);
 
-                    val elapsedMillis =
-                        System.currentTimeMillis() - timeBeforeJson;
-                    CSVLogger.writeTimeLoggingRow(elapsedMillis, indexNumber);
-                }
+                val elapsedMillis = System.currentTimeMillis() - timeBeforeJson;
+                CSVLogger.writeTimeLoggingRow(elapsedMillis, indexNumber);
+            }
         };
         println("Finished parsing JSON file.");
 
         // Enable article refs FK check after all data is inserted
-        val timeBeforeFKEnabling = System.currentTimeMillis();
-        println("Enabling FK checks...");
         DatabaseManager.enableArticleRefsForeignKeyCheck();
-        println(
-          s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}."
-        );
 
         DatabaseManager.closeConnection;
         jsonFileSource.close();
 
-        println(
-          s"Total elapsed time: ${getCurrentTimeStringFrom(timeBeforeJson)}"
-        );
+        println(s"Total elapsed time: ${getCurrentTimeStringFrom(timeBeforeJson)}");
         println("Terminated.");
     }
 
@@ -69,28 +55,18 @@ object Main {
             return;
         }
 
-        val cleanedLineString = eachLineString
-            // Replace non-printable character with ?
-            .replace("\uFFFF", "?")
-            .replaceFirst("^,", "");
-        val parsedArticle: Article =
-            cleanedLineString.parseJson.convertTo[Article];
+        val cleanedLineString = eachLineString.replace("\uFFFF", "?").replaceFirst("^,", "");
+        val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
         DatabaseManager.addArticle(parsedArticle);
 
         if (parsedArticle.authors.isDefined) {
             DatabaseManager.addAuthors(parsedArticle.authors.get);
-            DatabaseManager.addArticleToAuthorsRelation(
-              parsedArticle,
-              parsedArticle.authors.get
-            );
+            DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors.get);
         }
 
         if (parsedArticle.references.isDefined) {
-            DatabaseManager.addArticleToArticlesRelation(
-              parsedArticle,
-              parsedArticle.references.get
-            );
+            DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
         }
     }
 }

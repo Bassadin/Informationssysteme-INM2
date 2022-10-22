@@ -1,3 +1,4 @@
+import Helpers.getCurrentTimeStringFrom
 import JsonDefinitions.{Article, Author}
 
 import java.io.File
@@ -172,6 +173,8 @@ object DatabaseManager {
     }
 
     def enableArticleRefsForeignKeyCheck(): Unit = {
+        val timeBeforeFKEnabling = System.currentTimeMillis();
+        println("Enabling FK checks...");
         val alterForeignKeyStatement = dbConnection.createStatement();
 
         val alterForeignKeySQLString =
@@ -182,6 +185,8 @@ object DatabaseManager {
 
         alterForeignKeyStatement.execute(alterForeignKeySQLString);
         alterForeignKeyStatement.close();
+
+        println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
     }
 
     def deleteDBFile(): Unit = {

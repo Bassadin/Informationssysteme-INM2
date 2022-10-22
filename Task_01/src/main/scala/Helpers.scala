@@ -1,4 +1,3 @@
-
 import scala.io.Source
 
 object Helpers {
@@ -11,5 +10,10 @@ object Helpers {
         val seconds = (timeDifference / 1000) % 60
 
         s"${minutes}m ${seconds}s";
+    }
+
+    def printElapsedTimeStatusMessage(indexNumber: Int, referenceTimestamp: Long): Unit = {
+        val indexNumberPrintString = String.format("%,d", indexNumber);
+        println(s"Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(referenceTimestamp)}");
     }
 }
