@@ -1,37 +1,22 @@
 import Helpers.getCurrentTimeStringFrom
 import JsonDefinitions.Article
-import com.github.tototoshi.csv._
 import spray.json._
-
-import java.io.File
 import scala.io.Source
 import JsonDefinitions.ArticleProtocol._
-
 import java.text.SimpleDateFormat
-import java.util.Date
 
 object Main {
     val dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm")
 
     val JSON_PATH = "./src/data/dblp.v12.json";
-    val DB_PATH = "./demo.mv.db"
-    val CSV_MEASUREMENT_PATH =
-        s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
 
     val timeBeforeJson = System.currentTimeMillis();
 
     def main(args: Array[String]): Unit = {
         // DELETE OLD DB
-        println("Deleting old db...");
-        new File(DB_PATH).delete();
+        DatabaseManager.deleteDBFile();
 
         println("Starting...");
-
-        // CSV Stuff
-        println("Opening csv file for time logging");
-        val csvFile = new File(CSV_MEASUREMENT_PATH);
-        val csvWriter = CSVWriter.open(csvFile);
-        csvWriter.writeRow(List("elapsed_time_millis", "stored_entries"));
 
         val jsonFileSource = Source.fromFile(JSON_PATH);
         val jsonFileLinesIterator = jsonFileSource.getLines;
@@ -56,7 +41,7 @@ object Main {
 
                     val elapsedMillis =
                         System.currentTimeMillis() - timeBeforeJson;
-                    csvWriter.writeRow(List(elapsedMillis, indexNumber));
+                    CSVLogger.writeTimeLoggingRow(elapsedMillis, indexNumber);
                 }
         };
         println("Finished parsing JSON file.");
@@ -69,7 +54,6 @@ object Main {
           s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}."
         );
 
-        csvWriter.close();
         DatabaseManager.closeConnection;
         jsonFileSource.close();
 

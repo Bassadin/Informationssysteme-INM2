@@ -1,10 +1,11 @@
-
 import JsonDefinitions.{Article, Author}
 
-import java.sql.{DriverManager, PreparedStatement}
-
+import java.io.File
+import java.sql.DriverManager
 
 object DatabaseManager {
+    val DB_PATH = "./demo.mv.db"
+
     val dbConnection = DriverManager.getConnection("jdbc:h2:./demo");
 
     // Call this right away so that the databases are initialized for the prepared statements later
@@ -72,23 +73,33 @@ object DatabaseManager {
     }
 
     // JsonDefinitions.Article relationships
-    val articleRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)");
+    val articleRelationInsertStatement = dbConnection.prepareStatement(
+      "INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)"
+    );
 
-    def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
+    def addArticleToArticleRelation(
+        referencingArticle: Article,
+        referencedArticleId: Long
+    ): Unit = {
         articleRelationInsertStatement.setLong(1, referencingArticle.id);
         articleRelationInsertStatement.setLong(2, referencedArticleId);
 
         articleRelationInsertStatement.executeUpdate();
     }
 
-    def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
+    def addArticleToArticlesRelation(
+        referencingArticle: Article,
+        referencedArticles: List[Long]
+    ): Unit = {
         referencedArticles.foreach(eachArticle => {
             this.addArticleToArticleRelation(referencingArticle, eachArticle);
         })
     }
 
     // JsonDefinitions.Author relationships
-    val authorRelationInsertStatement = dbConnection.prepareStatement("INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)");
+    val authorRelationInsertStatement = dbConnection.prepareStatement(
+      "INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)"
+    );
 
     def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
         authorRelationInsertStatement.setLong(1, article.id);
@@ -97,14 +108,18 @@ object DatabaseManager {
         authorRelationInsertStatement.executeUpdate();
     }
 
-    def addArticleToAuthorsRelation(article: Article, authors: List[Author]): Unit = {
+    def addArticleToAuthorsRelation(
+        article: Article,
+        authors: List[Author]
+    ): Unit = {
         authors.foreach(eachAuthor => {
             this.addArticleToAuthorRelation(article, eachAuthor);
         })
     }
 
     // Authors
-    val authorInsertStatement = dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
+    val authorInsertStatement =
+        dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
 
     def addAuthor(authorToAdd: Author): Unit = {
         authorInsertStatement.setLong(1, authorToAdd.id);
@@ -112,7 +127,7 @@ object DatabaseManager {
 
         authorToAdd.org match {
             case Some(i) => authorInsertStatement.setString(3, i)
-            case None => authorInsertStatement.setNull(3, 0)
+            case None    => authorInsertStatement.setNull(3, 0)
         }
 
         authorInsertStatement.executeUpdate();
@@ -125,7 +140,9 @@ object DatabaseManager {
     }
 
     // Articles
-    val articleInsertStatement = dbConnection.prepareStatement("MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    val articleInsertStatement = dbConnection.prepareStatement(
+      "MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
 
     def addArticle(articleToAdd: Article) = {
 
@@ -138,7 +155,7 @@ object DatabaseManager {
 
         articleToAdd.doc_type match {
             case Some(i) => articleInsertStatement.setString(7, i)
-            case None => articleInsertStatement.setNull(7, 0)
+            case None    => articleInsertStatement.setNull(7, 0)
         }
 
         articleInsertStatement.setString(8, articleToAdd.publisher);
@@ -146,7 +163,8 @@ object DatabaseManager {
         articleInsertStatement.setString(10, articleToAdd.issue);
 
         articleToAdd.DOI match {
-            case Some(i) => articleInsertStatement.setString(11, articleToAdd.DOI.get);
+            case Some(i) =>
+                articleInsertStatement.setString(11, articleToAdd.DOI.get);
             case None => articleInsertStatement.setNull(11, 0);
         }
 
@@ -164,5 +182,10 @@ object DatabaseManager {
 
         alterForeignKeyStatement.execute(alterForeignKeySQLString);
         alterForeignKeyStatement.close();
+    }
+
+    def deleteDBFile(): Unit = {
+        println("Deleting old db...");
+        new File(DB_PATH).delete();
     }
 }
