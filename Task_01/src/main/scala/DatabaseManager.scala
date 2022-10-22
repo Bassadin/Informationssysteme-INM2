@@ -173,7 +173,7 @@ object DatabaseManager {
         println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
     }
 
-    def deleteDBFile(): Unit = {
+    def deleteDatabaseFile(): Unit = {
         println("Deleting old db...");
         new File(DB_PATH).delete();
     }

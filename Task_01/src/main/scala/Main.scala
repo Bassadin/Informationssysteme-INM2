@@ -12,10 +12,10 @@ object Main {
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
-        val timeBeforeJson = System.currentTimeMillis();
+        val millisecondsTimeOnStart = System.currentTimeMillis();
 
         // DELETE OLD DB
-        DatabaseManager.deleteDBFile();
+        DatabaseManager.deleteDatabaseFile();
 
         println("Starting...");
 
@@ -26,15 +26,15 @@ object Main {
         jsonFileLinesIterator.next();
 
         // Use zipWithIndex to get an index iterator alongside the elements
-        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, indexNumber) =>
+        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, eachIndex) =>
             handleLineString(eachLineString);
 
             // Print a status message every 50k lines
-            if (indexNumber % 50000 == 0) {
-                Helpers.printElapsedTimeStatusMessage(indexNumber, timeBeforeJson);
+            if (eachIndex % 50000 == 0) {
+                Helpers.printElapsedTimeStatusMessage(eachIndex, millisecondsTimeOnStart);
 
-                val elapsedMillis = System.currentTimeMillis() - timeBeforeJson;
-                CSVLogger.writeTimeLoggingRow(elapsedMillis, indexNumber);
+                val elapsedMilliseconds = System.currentTimeMillis() - millisecondsTimeOnStart;
+                CSVLogger.writeTimeLoggingRow(elapsedMilliseconds, eachIndex);
             }
         };
         println("Finished parsing JSON file.");
@@ -45,7 +45,7 @@ object Main {
         DatabaseManager.closeConnection;
         jsonFileSource.close();
 
-        println(s"Total elapsed time: ${getCurrentTimeStringFrom(timeBeforeJson)}");
+        println(s"Total elapsed time: ${getCurrentTimeStringFrom(millisecondsTimeOnStart)}");
         println("Terminated.");
     }
 
