@@ -7,6 +7,10 @@ import java.sql.DriverManager
 object DatabaseManager {
     val DB_PATH = "./demo.mv.db"
 
+    // Delete old DB file
+    println("Deleting old db...");
+    new File(DB_PATH).delete();
+
     val dbConnection = DriverManager.getConnection("jdbc:h2:./demo");
 
     // Call this right away so that the databases are initialized for the prepared statements later
@@ -171,10 +175,5 @@ object DatabaseManager {
         alterForeignKeyStatement.close();
 
         println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
-    }
-
-    def deleteDatabaseFile(): Unit = {
-        println("Deleting old db...");
-        new File(DB_PATH).delete();
     }
 }

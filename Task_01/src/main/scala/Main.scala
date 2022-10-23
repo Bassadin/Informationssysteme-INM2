@@ -14,9 +14,6 @@ object Main {
         // Measure time before starting as reference timeframe
         val millisecondsTimeOnStart = System.currentTimeMillis();
 
-        // DELETE OLD DB
-        DatabaseManager.deleteDatabaseFile();
-
         println("Starting...");
 
         val jsonFileSource = Source.fromFile(JSON_PATH);
