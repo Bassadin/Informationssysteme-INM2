@@ -57,6 +57,10 @@ object Main {
         }
 
         val cleanedLineString = eachLineString.replace("\uFFFF", "?").replaceFirst("^,", "");
+
+        // TODO Remove fos and others with regex (no performance improvements... :( )
+        // .replace("""(?:"fos":\[.*?\],|"indexed_abstract":\{.*\},|"venue":\{.*?\})""", "");
+
         val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
         DatabaseManager.addArticle(parsedArticle);
