@@ -2,7 +2,7 @@ import Helpers.getCurrentTimeStringFrom
 import JsonDefinitions.{Article, Author}
 
 import java.io.File
-import java.sql.DriverManager
+import java.sql.{Connection, DriverManager, PreparedStatement}
 
 object DatabaseManager {
     val DB_PATH = "./demo.mv.db"
@@ -11,12 +11,12 @@ object DatabaseManager {
     println("Deleting old db...");
     new File(DB_PATH).delete();
 
-    val dbConnection = DriverManager.getConnection("jdbc:h2:./demo");
+    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:./demo");
 
     // Call this right away so that the databases are initialized for the prepared statements later
-    this.createDatabases;
+    this.createDatabases();
 
-    def createDatabases: Unit = {
+    def createDatabases(): Unit = {
         val createDBTablesStatement = dbConnection.createStatement();
         val createAuthorsSqlString =
             """
@@ -73,12 +73,12 @@ object DatabaseManager {
         createDBTablesStatement.close();
     }
 
-    def closeConnection: Unit = {
-        dbConnection.close;
+    def closeConnection(): Unit = {
+        dbConnection.close();
     }
 
     // JsonDefinitions.Article relationships
-    val articleRelationInsertStatement = dbConnection.prepareStatement(
+    val articleRelationInsertStatement: PreparedStatement = dbConnection.prepareStatement(
       "INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)"
     );
 
@@ -94,7 +94,7 @@ object DatabaseManager {
     }
 
     // JsonDefinitions.Author relationships
-    val authorRelationInsertStatement = dbConnection.prepareStatement(
+    val authorRelationInsertStatement: PreparedStatement = dbConnection.prepareStatement(
       "INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)"
     );
 
@@ -113,7 +113,7 @@ object DatabaseManager {
     }
 
     // Authors
-    val authorInsertStatement =
+    val authorInsertStatement: PreparedStatement =
         dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
 
     def addAuthor(authorToAdd: Author): Unit = {
@@ -133,11 +133,11 @@ object DatabaseManager {
     }
 
     // Articles
-    val articleInsertStatement = dbConnection.prepareStatement(
+    val articleInsertStatement: PreparedStatement = dbConnection.prepareStatement(
       "MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
 
-    def addArticle(articleToAdd: Article) = {
+    def addArticle(articleToAdd: Article): Int = {
 
         articleInsertStatement.setLong(1, articleToAdd.id);
         articleInsertStatement.setString(2, articleToAdd.title);
@@ -156,7 +156,7 @@ object DatabaseManager {
         articleInsertStatement.setString(10, articleToAdd.issue);
 
         articleToAdd.DOI match {
-            case Some(i) => articleInsertStatement.setString(11, articleToAdd.DOI.get);
+            case Some(i) => articleInsertStatement.setString(11, i);
             case None    => articleInsertStatement.setNull(11, 0);
         }
 

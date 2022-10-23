@@ -39,13 +39,18 @@ object Main {
         // Enable article refs FK check after all data is inserted
         DatabaseManager.enableArticleRefsForeignKeyCheck();
 
-        DatabaseManager.closeConnection;
+        DatabaseManager.closeConnection();
         jsonFileSource.close();
 
         println(s"Total elapsed time: ${getCurrentTimeStringFrom(millisecondsTimeOnStart)}");
         println("Terminated.");
     }
 
+
+    /**
+     * Handle a json line string for insertion in the db
+     * @param eachLineString The string to compute
+     */
     def handleLineString(eachLineString: String): Unit = {
         // Return for last line
         if (eachLineString.charAt(0) == ']') {
