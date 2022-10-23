@@ -28,7 +28,7 @@ object Helpers {
     def printElapsedTimeStatusMessage(indexNumber: Int, referenceTimestampMillis: Long): Unit = {
         val indexNumberPrintString = String.format("%,d", indexNumber);
         println(
-          s"Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(referenceTimestampMillis)}"
+          s"| - Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(referenceTimestampMillis)}"
         );
     }
 }

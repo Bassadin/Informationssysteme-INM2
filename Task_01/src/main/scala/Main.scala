@@ -17,6 +17,8 @@ object Main {
         val jsonFileSource = Source.fromFile(JSON_PATH);
         val jsonFileLinesIterator = jsonFileSource.getLines;
 
+        println(s"--- Starting to parse json file '$JSON_PATH' ---");
+
         // Skip first line, it only contains a [
         jsonFileLinesIterator.next();
 

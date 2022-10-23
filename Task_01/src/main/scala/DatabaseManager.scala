@@ -19,6 +19,10 @@ object DatabaseManager {
     /** Create the necessary project databases
       */
     def createDatabases(): Unit = {
+        val timeBeforeDBCreationMillis = System.currentTimeMillis();
+
+        println("Creating database tables...");
+
         val createDBTablesStatement = dbConnection.createStatement();
         val createAuthorsSqlString =
             """
@@ -73,6 +77,8 @@ object DatabaseManager {
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
+
+        println(s"Elapsed time for DB creation: ${getCurrentTimeStringFrom(timeBeforeDBCreationMillis)}");
     }
 
     /** Close the DB connection.
