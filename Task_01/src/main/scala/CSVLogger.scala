@@ -1,10 +1,11 @@
-import Main.dateTimeFormat
 import com.github.tototoshi.csv.CSVWriter
 
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Date
 
 object CSVLogger {
+    val dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm")
     val CSV_MEASUREMENT_PATH =
         s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
 

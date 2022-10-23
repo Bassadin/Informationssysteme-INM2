@@ -6,8 +6,6 @@ import JsonDefinitions.ArticleProtocol._
 import java.text.SimpleDateFormat
 
 object Main {
-    val dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm")
-
     val JSON_PATH = "./src/data/dblp.v12.json";
 
     def main(args: Array[String]): Unit = {
