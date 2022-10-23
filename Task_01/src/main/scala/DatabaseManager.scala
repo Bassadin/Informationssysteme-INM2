@@ -16,6 +16,8 @@ object DatabaseManager {
     // Call this right away so that the databases are initialized for the prepared statements later
     this.createDatabases();
 
+    /** Create the necessary project databases
+      */
     def createDatabases(): Unit = {
         val createDBTablesStatement = dbConnection.createStatement();
         val createAuthorsSqlString =
@@ -73,6 +75,8 @@ object DatabaseManager {
         createDBTablesStatement.close();
     }
 
+    /** Close the DB connection.
+      */
     def closeConnection(): Unit = {
         dbConnection.close();
     }
@@ -82,6 +86,12 @@ object DatabaseManager {
       "INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)"
     );
 
+    /** Add an article that's referencing another article to the DB.
+      * @param referencingArticle
+      *   The article that's doing the referencing.
+      * @param referencedArticleId
+      *   The article that's being referenced.
+      */
     def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
         articleRelationInsertStatement.setLong(1, referencingArticle.id);
         articleRelationInsertStatement.setLong(2, referencedArticleId);
@@ -89,6 +99,12 @@ object DatabaseManager {
         articleRelationInsertStatement.executeUpdate();
     }
 
+    /** Add to the DB multiple articles that are being referenced by another article.
+      * @param referencingArticle
+      *   The article that's doing the referencing.
+      * @param referencedArticles
+      *   The articles that are being referenced.
+      */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
         referencedArticles.foreach(eachArticle => this.addArticleToArticleRelation(referencingArticle, eachArticle))
     }
@@ -98,6 +114,12 @@ object DatabaseManager {
       "INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)"
     );
 
+    /** Add to the DB a relation from an article to an author.
+      * @param article
+      *   The article to add the author to.
+      * @param author
+      *   The author to add to the relation.
+      */
     def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
         authorRelationInsertStatement.setLong(1, article.id);
         authorRelationInsertStatement.setLong(2, author.id);
@@ -105,6 +127,12 @@ object DatabaseManager {
         authorRelationInsertStatement.executeUpdate();
     }
 
+    /** Add to the DB a relation from an article to multiple authors.
+      * @param article
+      *   The article to add the authors to.
+      * @param authors
+      *   The authors to add to the relation.
+      */
     def addArticleToAuthorsRelation(
         article: Article,
         authors: List[Author]
@@ -116,6 +144,10 @@ object DatabaseManager {
     val authorInsertStatement: PreparedStatement =
         dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
 
+    /** Add a single author to the DB.
+      * @param authorToAdd
+      *   The author to add.
+      */
     def addAuthor(authorToAdd: Author): Unit = {
         authorInsertStatement.setLong(1, authorToAdd.id);
         authorInsertStatement.setString(2, authorToAdd.name);
@@ -128,6 +160,10 @@ object DatabaseManager {
         authorInsertStatement.executeUpdate();
     }
 
+    /** Add multiple authors to the DB
+      * @param authorsToAdd
+      *   The list of authors to add.
+      */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
         authorsToAdd.foreach(eachAuthor => this.addAuthor(eachAuthor))
     }
@@ -137,7 +173,11 @@ object DatabaseManager {
       "MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
 
-    def addArticle(articleToAdd: Article): Int = {
+    /** Add a single article to the DB
+      * @param articleToAdd
+      *   The Article to add to the DB.
+      */
+    def addArticle(articleToAdd: Article): Unit = {
 
         articleInsertStatement.setLong(1, articleToAdd.id);
         articleInsertStatement.setString(2, articleToAdd.title);
@@ -163,6 +203,8 @@ object DatabaseManager {
         articleInsertStatement.executeUpdate();
     }
 
+    /** Enable the DB foreign key checks for the referenced_article_id column in the articles_references table.
+      */
     def enableArticleRefsForeignKeyCheck(): Unit = {
         val timeBeforeFKEnabling = System.currentTimeMillis();
         println("Enabling FK checks...");

@@ -14,6 +14,12 @@ object CSVLogger {
     val csvWriter: CSVWriter = CSVWriter.open(csvFile);
     csvWriter.writeRow(List("elapsed_time_millis", "stored_entries"));
 
+    /** Writes a row of data into the CSV file
+      * @param elapsedMillis
+      *   the elapsed milliseconds to write
+      * @param indexNumber
+      *   the number of read JSON entries that have already been read
+      */
     def writeTimeLoggingRow(elapsedMillis: Long, indexNumber: Int): Unit = {
         csvWriter.writeRow(List(elapsedMillis, indexNumber));
     }

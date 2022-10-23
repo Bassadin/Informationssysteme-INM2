@@ -46,11 +46,10 @@ object Main {
         println("Terminated.");
     }
 
-
-    /**
-     * Handle a json line string for insertion in the db
-     * @param eachLineString The string to compute
-     */
+    /** Handle a json line string for insertion in the db
+      * @param eachLineString
+      *   The string to compute
+      */
     def handleLineString(eachLineString: String): Unit = {
         // Return for last line
         if (eachLineString.charAt(0) == ']') {
