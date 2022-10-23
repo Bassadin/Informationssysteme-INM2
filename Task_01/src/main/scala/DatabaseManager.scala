@@ -11,7 +11,11 @@ object DatabaseManager {
     println("Deleting old db...");
     new File(DB_PATH).delete();
 
+    // In-file
     val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:./demo");
+
+    // Client-Server
+//    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:tcp://localhost:1521/demo_db");
 
     // Call this right away so that the databases are initialized for the prepared statements later
     this.createDatabases();
