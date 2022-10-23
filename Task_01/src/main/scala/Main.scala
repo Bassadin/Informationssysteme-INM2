@@ -61,13 +61,16 @@ object Main {
 
         DatabaseManager.addArticle(parsedArticle);
 
-        if (parsedArticle.authors.isDefined) {
-            DatabaseManager.addAuthors(parsedArticle.authors.get);
-            DatabaseManager.addArticleToAuthorsRelation(parsedArticle, parsedArticle.authors.get);
+        parsedArticle.authors match {
+            case Some(i) =>
+                DatabaseManager.addAuthors(i);
+                DatabaseManager.addArticleToAuthorsRelation(parsedArticle, i);
+            case None =>
         }
 
-        if (parsedArticle.references.isDefined) {
-            DatabaseManager.addArticleToArticlesRelation(parsedArticle, parsedArticle.references.get);
+        parsedArticle.references match {
+            case Some(i) => DatabaseManager.addArticleToArticlesRelation(parsedArticle, i);
+            case None    =>
         }
     }
 }
