@@ -176,7 +176,7 @@ object DatabaseManager {
 
     // Articles
     val articleInsertStatement: PreparedStatement = dbConnection.prepareStatement(
-      "MERGE INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO articles VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
 
     /** Add a single article to the DB
