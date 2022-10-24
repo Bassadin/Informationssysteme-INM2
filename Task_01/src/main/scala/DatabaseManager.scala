@@ -14,6 +14,8 @@ object DatabaseManager {
     // In-file
     val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:./demo;MODE=MYSQL");
 
+    dbConnection.setAutoCommit(false);
+
     // Client-Server
 //    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:tcp://localhost:1521/demo_db");
 
@@ -81,6 +83,7 @@ object DatabaseManager {
         createDBTablesStatement.execute(createArticlesAuthorsSqlString);
 
         createDBTablesStatement.close();
+        dbConnection.commit();
 
         println(s"Elapsed time for DB creation: ${getCurrentTimeStringFrom(timeBeforeDBCreationMillis)}");
     }
@@ -96,19 +99,6 @@ object DatabaseManager {
       "INSERT INTO articles_references (referencing_article_id, referenced_article_id) VALUES (?, ?)"
     );
 
-    /** Add an article that's referencing another article to the DB.
-      * @param referencingArticle
-      *   The article that's doing the referencing.
-      * @param referencedArticleId
-      *   The article that's being referenced.
-      */
-    def addArticleToArticleRelation(referencingArticle: Article, referencedArticleId: Long): Unit = {
-        articleRelationInsertStatement.setLong(1, referencingArticle.id);
-        articleRelationInsertStatement.setLong(2, referencedArticleId);
-
-        articleRelationInsertStatement.executeUpdate();
-    }
-
     /** Add to the DB multiple articles that are being referenced by another article.
       * @param referencingArticle
       *   The article that's doing the referencing.
@@ -116,7 +106,14 @@ object DatabaseManager {
       *   The articles that are being referenced.
       */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
-        referencedArticles.foreach(eachArticle => this.addArticleToArticleRelation(referencingArticle, eachArticle))
+        referencedArticles.foreach(eachReferencedArticle => {
+            articleRelationInsertStatement.setLong(1, referencingArticle.id);
+            articleRelationInsertStatement.setLong(2, eachReferencedArticle);
+
+            authorInsertStatement.addBatch();
+        })
+        articleRelationInsertStatement.executeBatch();
+        dbConnection.commit();
     }
 
     // JsonDefinitions.Author relationships
@@ -135,6 +132,7 @@ object DatabaseManager {
         authorRelationInsertStatement.setLong(2, author.id);
 
         authorRelationInsertStatement.executeUpdate();
+        dbConnection.commit();
     }
 
     /** Add to the DB a relation from an article to multiple authors.
@@ -154,28 +152,24 @@ object DatabaseManager {
     val authorInsertStatement: PreparedStatement =
         dbConnection.prepareStatement("REPLACE INTO authors VALUES (?, ?, ?)");
 
-    /** Add a single author to the DB.
-      * @param authorToAdd
-      *   The author to add.
-      */
-    def addAuthor(authorToAdd: Author): Unit = {
-        authorInsertStatement.setLong(1, authorToAdd.id);
-        authorInsertStatement.setString(2, authorToAdd.name);
-
-        authorToAdd.org match {
-            case Some(i) => authorInsertStatement.setString(3, i)
-            case None    => authorInsertStatement.setNull(3, 0)
-        }
-
-        authorInsertStatement.executeUpdate();
-    }
-
     /** Add multiple authors to the DB
       * @param authorsToAdd
       *   The list of authors to add.
       */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
-        authorsToAdd.foreach(eachAuthor => this.addAuthor(eachAuthor))
+        authorsToAdd.foreach(eachAuthor => {
+            authorInsertStatement.setLong(1, eachAuthor.id);
+            authorInsertStatement.setString(2, eachAuthor.name);
+
+            eachAuthor.org match {
+                case Some(i) => authorInsertStatement.setString(3, i)
+                case None    => authorInsertStatement.setNull(3, 0)
+            }
+
+            authorInsertStatement.addBatch();
+        });
+        authorInsertStatement.executeBatch();
+        dbConnection.commit();
     }
 
     // Articles
@@ -211,6 +205,7 @@ object DatabaseManager {
         }
 
         articleInsertStatement.executeUpdate();
+        dbConnection.commit();
     }
 
     /** Enable the DB foreign key checks for the referenced_article_id column in the articles_references table.
@@ -225,6 +220,7 @@ object DatabaseManager {
               ADD FOREIGN KEY (referenced_article_id) REFERENCES articles(article_id);
             """);
         alterForeignKeyStatement.close();
+        dbConnection.commit();
 
         println(s"Enabling FK checks finished in ${getCurrentTimeStringFrom(timeBeforeFKEnabling)}.");
     }
