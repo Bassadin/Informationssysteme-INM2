@@ -27,4 +27,5 @@ For some reason, the client server mode seems _way_ slower than in-file even tho
 
 - Maybe handle the db instructions and line readings via threads?
 - How to measure bottlenecks?
+  - IntelliJ's profiler seem pretty neat
 - Why aren't `MERGE INTO KEY(pk)` or `REPLACE INTO` or `INSERT IGNORE` speeding up things? 
