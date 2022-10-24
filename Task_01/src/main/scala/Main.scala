@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 
 object Main {
     val JSON_PATH = "./src/data/dblp.v12.json";
+    val LOGGING_FREQUENCY_LINES = 200_000;
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
@@ -27,7 +28,7 @@ object Main {
             handleLineString(eachLineString);
 
             // Print a status message every 50k lines
-            if (eachIndex % 50000 == 0) {
+            if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
                 Helpers.printElapsedTimeStatusMessage(eachIndex, millisecondsTimeOnStart);
 
                 val elapsedMilliseconds = System.currentTimeMillis() - millisecondsTimeOnStart;
