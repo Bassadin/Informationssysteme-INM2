@@ -20,3 +20,9 @@ Web interface then available on http://localhost:81/.
 DB Connection in Java can be achieved with `DriverManager.getConnection("jdbc:h2:tcp://localhost:1521/demo_db");`.
 
 For some reason, the client server mode seems _way_ slower than in-file even though the docker volume for the db server is also on my SSD.
+
+## Ideas for future improvements
+
+- Maybe handle the db instructions and line readings via threads?
+- How to measure bottlenecks?
+- Why aren't `MERGE INTO KEY(pk)` or `REPLACE INTO` or `INSERT IGNORE` speeding up things? 
