@@ -110,7 +110,7 @@ object DatabaseManager {
             articleRelationInsertStatement.setLong(1, referencingArticle.id);
             articleRelationInsertStatement.setLong(2, eachReferencedArticle);
 
-            authorInsertStatement.addBatch();
+            articleRelationInsertStatement.addBatch();
         })
         articleRelationInsertStatement.executeBatch();
         dbConnection.commit();
@@ -120,20 +120,6 @@ object DatabaseManager {
     val authorRelationInsertStatement: PreparedStatement = dbConnection.prepareStatement(
       "INSERT INTO articles_authors (article_id, author_id) VALUES (?, ?)"
     );
-
-    /** Add to the DB a relation from an article to an author.
-      * @param article
-      *   The article to add the author to.
-      * @param author
-      *   The author to add to the relation.
-      */
-    def addArticleToAuthorRelation(article: Article, author: Author): Unit = {
-        authorRelationInsertStatement.setLong(1, article.id);
-        authorRelationInsertStatement.setLong(2, author.id);
-
-        authorRelationInsertStatement.executeUpdate();
-        dbConnection.commit();
-    }
 
     /** Add to the DB a relation from an article to multiple authors.
       * @param article
@@ -145,7 +131,14 @@ object DatabaseManager {
         article: Article,
         authors: List[Author]
     ): Unit = {
-        authors.foreach(eachAuthor => this.addArticleToAuthorRelation(article, eachAuthor));
+        authors.foreach(eachAuthor => {
+            authorRelationInsertStatement.setLong(1, article.id);
+            authorRelationInsertStatement.setLong(2, eachAuthor.id);
+
+            authorRelationInsertStatement.addBatch();
+        });
+        authorRelationInsertStatement.executeBatch();
+        dbConnection.commit();
     }
 
     // Authors
