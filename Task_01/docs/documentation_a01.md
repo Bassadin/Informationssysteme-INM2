@@ -29,3 +29,4 @@ For some reason, the client server mode seems _way_ slower than in-file even tho
 - How to measure bottlenecks?
   - IntelliJ's profiler seem pretty neat
 - Why aren't `MERGE INTO KEY(pk)` or `REPLACE INTO` or `INSERT IGNORE` speeding up things? 
+- I'd like to add delta times to each "Elapsed Time" log, but without var, it's a pain
