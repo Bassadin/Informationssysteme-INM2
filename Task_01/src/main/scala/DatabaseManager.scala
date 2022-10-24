@@ -12,7 +12,7 @@ object DatabaseManager {
     new File(DB_PATH).delete();
 
     // In-file
-    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:./demo");
+    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:./demo;MODE=MYSQL");
 
     // Client-Server
 //    val dbConnection: Connection = DriverManager.getConnection("jdbc:h2:tcp://localhost:1521/demo_db");
@@ -152,7 +152,7 @@ object DatabaseManager {
 
     // Authors
     val authorInsertStatement: PreparedStatement =
-        dbConnection.prepareStatement("MERGE INTO authors VALUES (?, ?, ?)");
+        dbConnection.prepareStatement("REPLACE INTO authors VALUES (?, ?, ?)");
 
     /** Add a single author to the DB.
       * @param authorToAdd
