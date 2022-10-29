@@ -11,7 +11,7 @@ object RedisDatabaseManager {
 
     jedisInstance.flushAll(FlushMode.SYNC);
 
-    final val articleToArticleIndexAutoIncrementKey = "ai_index_article_to_article_relation";
+    final val articleToArticleIndexAutoIncrementKey = "ai_index_relation_article_to_article";
 
     /** Add to the DB multiple articles that are being referenced by another article.
       * @param referencingArticle
@@ -24,7 +24,7 @@ object RedisDatabaseManager {
             jedisInstance.incr(articleToArticleIndexAutoIncrementKey);
             val currentAutoIncrementId = jedisInstance.get(articleToArticleIndexAutoIncrementKey)
             val articleToArticleRelationRedisSetPrefixName: String =
-                s"article_to_article_relation_$currentAutoIncrementId";
+                s"relation_article_to_article_$currentAutoIncrementId";
 
             jedisInstance.hset(
               articleToArticleRelationRedisSetPrefixName,
@@ -39,7 +39,7 @@ object RedisDatabaseManager {
         })
     }
 
-    final val authorArticleIndexAutoIncrementKey = "ai_index_author_to_article_relation";
+    final val authorArticleIndexAutoIncrementKey = "ai_index_relation_author_to_article";
 
     /** Add to the DB a relation from an article to multiple authors.
       * @param article
@@ -54,7 +54,7 @@ object RedisDatabaseManager {
         authors.foreach(eachAuthor => {
             jedisInstance.incr(authorArticleIndexAutoIncrementKey);
             val currentAutoIncrementId = jedisInstance.get(authorArticleIndexAutoIncrementKey)
-            val articleAuthorRelationRedisSetPrefixName: String = s"author_article_relation_$currentAutoIncrementId";
+            val articleAuthorRelationRedisSetPrefixName: String = s"relation_author_article_$currentAutoIncrementId";
 
             jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
             jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "author_id", eachAuthor.id.toString);
