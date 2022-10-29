@@ -31,3 +31,7 @@ get FR
 $8
 France
 ```
+
+## Considerations
+
+- Use RedisJSON? https://redis.io/docs/stack/json/
