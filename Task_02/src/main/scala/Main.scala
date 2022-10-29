@@ -37,17 +37,13 @@ object Main {
         };
         println("Finished parsing JSON file.");
 
-        // Enable article refs FK check after all data is inserted
-        DatabaseManager.enableArticleRefsForeignKeyCheck();
-
-        DatabaseManager.closeConnection();
         jsonFileSource.close();
 
         println(s"Total elapsed time: ${getCurrentTimeStringFrom(millisecondsTimeOnStart)}");
         println("Terminated.");
     }
 
-    /** Handle a json line string for insertion in the db
+    /** Handle a json line string for insertion into redis
       * @param eachLineString
       *   The string to compute
       */
@@ -58,23 +54,19 @@ object Main {
         }
 
         val cleanedLineString = eachLineString.replace("\uFFFF", "?").replaceFirst("^,", "");
-
-        // TODO Remove fos and others with regex (no performance improvements... :( )
-        // .replace("""(?:"fos":\[.*?\],|"indexed_abstract":\{.*\},|"venue":\{.*?\})""", "");
-
         val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
-        DatabaseManager.addArticle(parsedArticle);
+        RedisDatabaseManager.addArticle(parsedArticle);
 
         parsedArticle.authors match {
             case Some(i) =>
-                DatabaseManager.addAuthors(i);
-                DatabaseManager.addArticleToAuthorsRelation(parsedArticle, i);
+                RedisDatabaseManager.addAuthors(i);
+                RedisDatabaseManager.addArticleToAuthorsRelation(parsedArticle, i);
             case None =>
         }
 
         parsedArticle.references match {
-            case Some(i) => DatabaseManager.addArticleToArticlesRelation(parsedArticle, i);
+            case Some(i) => RedisDatabaseManager.addArticleToArticlesRelation(parsedArticle, i);
             case None    =>
         }
     }

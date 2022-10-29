@@ -7,7 +7,7 @@ import java.util.Date
 object CSVLogger {
     val dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy-hh_mm")
     val CSV_MEASUREMENT_PATH =
-        s"./docs/measurements_${dateTimeFormat.format(new Date())}.csv";
+        s"./docs/measurements_a02_${dateTimeFormat.format(new Date())}.csv";
 
     // CSV Stuff
     println("Opening csv file for time logging");
