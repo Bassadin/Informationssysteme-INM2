@@ -5,7 +5,7 @@ import scala.io.Source
 import JsonDefinitions.ArticleProtocol._
 import java.text.SimpleDateFormat
 
-object Main {
+object Main_A02 {
     val JSON_PATH = "./src/data/dblp.v12.json";
     val LOGGING_FREQUENCY_LINES = 200_000;
 
