@@ -11,15 +11,35 @@ object RedisDatabaseManager {
 
     jedisInstance.flushAll(FlushMode.SYNC);
 
+    final val articleToArticleIndexAutoIncrementKey = "ai_index_article_to_article_relation";
+
     /** Add to the DB multiple articles that are being referenced by another article.
       * @param referencingArticle
       *   The article that's doing the referencing.
-      * @param referencedArticles
+      * @param referencedArticlesIDs
       *   The articles that are being referenced.
       */
-    def addArticleToArticlesRelation(referencingArticle: Article, referencedArticles: List[Long]): Unit = {
-        referencedArticles.foreach(eachReferencedArticle => {})
+    def addArticleToArticlesRelation(referencingArticle: Article, referencedArticlesIDs: List[Long]): Unit = {
+        referencedArticlesIDs.foreach(eachReferencedArticleID => {
+            jedisInstance.incr(articleToArticleIndexAutoIncrementKey);
+            val currentAutoIncrementId = jedisInstance.get(articleToArticleIndexAutoIncrementKey)
+            val articleToArticleRelationRedisSetPrefixName: String =
+                s"article_to_article_relation_$currentAutoIncrementId";
+
+            jedisInstance.hset(
+              articleToArticleRelationRedisSetPrefixName,
+              "referencing_article_id",
+              referencingArticle.id.toString
+            );
+            jedisInstance.hset(
+              articleToArticleRelationRedisSetPrefixName,
+              "referenced_article_id",
+              eachReferencedArticleID.toString
+            );
+        })
     }
+
+    final val authorArticleIndexAutoIncrementKey = "ai_index_author_to_article_relation";
 
     /** Add to the DB a relation from an article to multiple authors.
       * @param article
@@ -31,7 +51,14 @@ object RedisDatabaseManager {
         article: Article,
         authors: List[Author]
     ): Unit = {
-        authors.foreach(eachAuthor => {});
+        authors.foreach(eachAuthor => {
+            jedisInstance.incr(authorArticleIndexAutoIncrementKey);
+            val currentAutoIncrementId = jedisInstance.get(authorArticleIndexAutoIncrementKey)
+            val articleAuthorRelationRedisSetPrefixName: String = s"author_article_relation_$currentAutoIncrementId";
+
+            jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
+            jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "author_id", eachAuthor.id.toString);
+        });
     }
 
     /** Add multiple authors to the DB
@@ -39,7 +66,22 @@ object RedisDatabaseManager {
       *   The list of authors to add.
       */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
-        authorsToAdd.foreach(eachAuthor => {});
+        authorsToAdd.foreach(eachAuthor => {
+            val authorRedisSetPrefixName: String = s"author_${eachAuthor.id}";
+
+            // Return out if author key already exists
+            if (jedisInstance.keys(authorRedisSetPrefixName).size() > 0) {
+                return;
+            }
+
+            jedisInstance.hset(authorRedisSetPrefixName, "title", eachAuthor.name);
+
+            eachAuthor.org match {
+                case Some(i) => jedisInstance.hset(authorRedisSetPrefixName, "org", i);
+                case None    =>
+            }
+
+        });
     }
 
     /** Add a single article to the DB
@@ -47,24 +89,24 @@ object RedisDatabaseManager {
       *   The Article to add to the DB.
       */
     def addArticle(articleToAdd: Article): Unit = {
-        val articleRedisSetName: String = s"article_${articleToAdd.id}";
-        jedisInstance.hset(articleRedisSetName, "title", articleToAdd.title);
-        jedisInstance.hset(articleRedisSetName, "year", articleToAdd.year.toString);
-        jedisInstance.hset(articleRedisSetName, "n_citation", articleToAdd.n_citation.toString);
-        jedisInstance.hset(articleRedisSetName, "page_start", articleToAdd.page_start);
-        jedisInstance.hset(articleRedisSetName, "page_start", articleToAdd.page_start);
+        val articleRedisSetPrefixName: String = s"article_${articleToAdd.id}";
+        jedisInstance.hset(articleRedisSetPrefixName, "title", articleToAdd.title);
+        jedisInstance.hset(articleRedisSetPrefixName, "year", articleToAdd.year.toString);
+        jedisInstance.hset(articleRedisSetPrefixName, "n_citation", articleToAdd.n_citation.toString);
+        jedisInstance.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
+        jedisInstance.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
 
         articleToAdd.doc_type match {
-            case Some(i) => jedisInstance.hset(articleRedisSetName, "doc_type", i);
+            case Some(i) => jedisInstance.hset(articleRedisSetPrefixName, "doc_type", i);
             case None    =>
         }
 
-        jedisInstance.hset(articleRedisSetName, "publisher", articleToAdd.publisher);
-        jedisInstance.hset(articleRedisSetName, "volume", articleToAdd.volume);
-        jedisInstance.hset(articleRedisSetName, "issue", articleToAdd.issue);
+        jedisInstance.hset(articleRedisSetPrefixName, "publisher", articleToAdd.publisher);
+        jedisInstance.hset(articleRedisSetPrefixName, "volume", articleToAdd.volume);
+        jedisInstance.hset(articleRedisSetPrefixName, "issue", articleToAdd.issue);
 
         articleToAdd.DOI match {
-            case Some(i) => jedisInstance.hset(articleRedisSetName, "DOI", i);
+            case Some(i) => jedisInstance.hset(articleRedisSetPrefixName, "DOI", i);
             case None    =>
         }
     }
