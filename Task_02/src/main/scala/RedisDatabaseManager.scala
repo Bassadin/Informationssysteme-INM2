@@ -46,5 +46,26 @@ object RedisDatabaseManager {
       * @param articleToAdd
       *   The Article to add to the DB.
       */
-    def addArticle(articleToAdd: Article): Unit = {}
+    def addArticle(articleToAdd: Article): Unit = {
+        val articleRedisSetName: String = s"article_${articleToAdd.id}";
+        jedisInstance.hset(articleRedisSetName, "title", articleToAdd.title);
+        jedisInstance.hset(articleRedisSetName, "year", articleToAdd.year.toString);
+        jedisInstance.hset(articleRedisSetName, "n_citation", articleToAdd.n_citation.toString);
+        jedisInstance.hset(articleRedisSetName, "page_start", articleToAdd.page_start);
+        jedisInstance.hset(articleRedisSetName, "page_start", articleToAdd.page_start);
+
+        articleToAdd.doc_type match {
+            case Some(i) => jedisInstance.hset(articleRedisSetName, "doc_type", i);
+            case None    =>
+        }
+
+        jedisInstance.hset(articleRedisSetName, "publisher", articleToAdd.publisher);
+        jedisInstance.hset(articleRedisSetName, "volume", articleToAdd.volume);
+        jedisInstance.hset(articleRedisSetName, "issue", articleToAdd.issue);
+
+        articleToAdd.DOI match {
+            case Some(i) => jedisInstance.hset(articleRedisSetName, "DOI", i);
+            case None    =>
+        }
+    }
 }
