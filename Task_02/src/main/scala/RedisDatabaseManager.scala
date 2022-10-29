@@ -1,14 +1,15 @@
 import JsonDefinitions.{Article, Author}
-import redis.clients.jedis.JedisPooled
+import redis.clients.jedis.{Jedis, JedisPool, JedisPooled}
+import redis.clients.jedis.args.FlushMode
 
 object RedisDatabaseManager {
     val DB_HOST = "localhost";
     val DB_PORT = 32321;
 
-    // https://github.com/redis/jedis#easier-way-of-using-connection-pool
-    val jedisConnectionPooled = new JedisPooled(DB_HOST, DB_PORT);
+    val jedisConnectionPool: JedisPool = new JedisPool(DB_HOST, DB_PORT);
+    val jedisInstance: Jedis = jedisConnectionPool.getResource;
 
-    jedisConnectionPooled.functionFlush();
+    jedisInstance.flushAll(FlushMode.SYNC);
 
     /** Add to the DB multiple articles that are being referenced by another article.
       * @param referencingArticle
