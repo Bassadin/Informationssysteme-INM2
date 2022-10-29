@@ -17,7 +17,7 @@ object RedisDatabaseManager {
       * @param referencingArticle
       *   The article that's doing the referencing.
       * @param referencedArticlesIDs
-      *   The articles that are being referenced.
+      *   The articles that are being referenced in form of IDs.
       */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticlesIDs: List[Long]): Unit = {
         referencedArticlesIDs.foreach(eachReferencedArticleID => {
