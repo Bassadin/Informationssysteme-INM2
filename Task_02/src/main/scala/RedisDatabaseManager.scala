@@ -11,6 +11,10 @@ object RedisDatabaseManager {
 
     jedisInstance.flushAll(FlushMode.SYNC);
 
+    def closeConnection() : Unit = {
+        jedisConnectionPool.close();
+    }
+
     final val articleToArticleIndexAutoIncrementKey = "ai_index_relation_article_to_article";
 
     /** Add to the DB multiple articles that are being referenced by another article.

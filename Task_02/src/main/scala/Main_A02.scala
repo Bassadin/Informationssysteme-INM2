@@ -33,6 +33,7 @@ object Main_A02 {
         println("Finished parsing JSON file.");
 
         jsonFileSource.close();
+        RedisDatabaseManager.closeConnection();
 
         println(s"Total elapsed time: ${getCurrentTimeStringFrom(millisecondsTimeOnStart)}");
         println("Terminated.");
