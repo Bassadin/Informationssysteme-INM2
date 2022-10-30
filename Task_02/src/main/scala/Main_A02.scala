@@ -27,7 +27,6 @@ object Main_A02 {
         jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, eachIndex) =>
             handleLineString(eachLineString);
 
-            // Print a status message every 50k lines
             if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
                 Helpers.printElapsedTimeStatusMessage(eachIndex, millisecondsTimeOnStart);
 
