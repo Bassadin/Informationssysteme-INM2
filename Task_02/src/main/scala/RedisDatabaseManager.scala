@@ -1,5 +1,5 @@
 import JsonDefinitions.{Article, Author}
-import redis.clients.jedis.{Jedis, JedisPool, JedisPooled}
+import redis.clients.jedis.{Jedis, JedisPool, JedisPooled, Pipeline}
 import redis.clients.jedis.args.FlushMode
 
 object RedisDatabaseManager {
@@ -26,16 +26,20 @@ object RedisDatabaseManager {
             val articleToArticleRelationRedisSetPrefixName: String =
                 s"relation_article_to_article_$currentAutoIncrementId";
 
-            jedisInstance.hset(
+            val addArticleToArticleRelationPipeline = jedisInstance.pipelined();
+
+            addArticleToArticleRelationPipeline.hset(
               articleToArticleRelationRedisSetPrefixName,
               "referencing_article_id",
               referencingArticle.id.toString
             );
-            jedisInstance.hset(
+            addArticleToArticleRelationPipeline.hset(
               articleToArticleRelationRedisSetPrefixName,
               "referenced_article_id",
               eachReferencedArticleID.toString
             );
+
+            addArticleToArticleRelationPipeline.sync();
         })
     }
 
@@ -56,8 +60,16 @@ object RedisDatabaseManager {
             val currentAutoIncrementId = jedisInstance.get(authorArticleIndexAutoIncrementKey)
             val articleAuthorRelationRedisSetPrefixName: String = s"relation_author_article_$currentAutoIncrementId";
 
-            jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
-            jedisInstance.hset(articleAuthorRelationRedisSetPrefixName, "author_id", eachAuthor.id.toString);
+            val addArticleToAuthorPipeline = jedisInstance.pipelined();
+
+            addArticleToAuthorPipeline.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
+            addArticleToAuthorPipeline.hset(
+              articleAuthorRelationRedisSetPrefixName,
+              "author_id",
+              eachAuthor.id.toString
+            );
+
+            addArticleToAuthorPipeline.sync();
         });
     }
 
@@ -66,6 +78,7 @@ object RedisDatabaseManager {
       *   The list of authors to add.
       */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
+
         authorsToAdd.foreach(eachAuthor => {
             val authorRedisSetPrefixName: String = s"author_${eachAuthor.id}";
 
@@ -74,13 +87,16 @@ object RedisDatabaseManager {
                 return;
             }
 
-            jedisInstance.hset(authorRedisSetPrefixName, "title", eachAuthor.name);
+            val addAuthorsPipeline = jedisInstance.pipelined();
+
+            addAuthorsPipeline.hset(authorRedisSetPrefixName, "title", eachAuthor.name);
 
             eachAuthor.org match {
-                case Some(i) => jedisInstance.hset(authorRedisSetPrefixName, "org", i);
+                case Some(i) => addAuthorsPipeline.hset(authorRedisSetPrefixName, "org", i);
                 case None    =>
             }
 
+            addAuthorsPipeline.sync();
         });
     }
 
@@ -89,25 +105,30 @@ object RedisDatabaseManager {
       *   The Article to add to the DB.
       */
     def addArticle(articleToAdd: Article): Unit = {
+
+        val addArticlePipeline = jedisInstance.pipelined();
+
         val articleRedisSetPrefixName: String = s"article_${articleToAdd.id}";
-        jedisInstance.hset(articleRedisSetPrefixName, "title", articleToAdd.title);
-        jedisInstance.hset(articleRedisSetPrefixName, "year", articleToAdd.year.toString);
-        jedisInstance.hset(articleRedisSetPrefixName, "n_citation", articleToAdd.n_citation.toString);
-        jedisInstance.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
-        jedisInstance.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "title", articleToAdd.title);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "year", articleToAdd.year.toString);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "n_citation", articleToAdd.n_citation.toString);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "page_start", articleToAdd.page_start);
 
         articleToAdd.doc_type match {
-            case Some(i) => jedisInstance.hset(articleRedisSetPrefixName, "doc_type", i);
+            case Some(i) => addArticlePipeline.hset(articleRedisSetPrefixName, "doc_type", i);
             case None    =>
         }
 
-        jedisInstance.hset(articleRedisSetPrefixName, "publisher", articleToAdd.publisher);
-        jedisInstance.hset(articleRedisSetPrefixName, "volume", articleToAdd.volume);
-        jedisInstance.hset(articleRedisSetPrefixName, "issue", articleToAdd.issue);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "publisher", articleToAdd.publisher);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "volume", articleToAdd.volume);
+        addArticlePipeline.hset(articleRedisSetPrefixName, "issue", articleToAdd.issue);
 
         articleToAdd.DOI match {
-            case Some(i) => jedisInstance.hset(articleRedisSetPrefixName, "DOI", i);
+            case Some(i) => addArticlePipeline.hset(articleRedisSetPrefixName, "DOI", i);
             case None    =>
         }
+
+        addArticlePipeline.sync();
     }
 }
