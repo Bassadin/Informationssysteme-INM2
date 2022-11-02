@@ -1,4 +1,6 @@
+import DB_Stuff.RedisDatabaseManager
 import Helpers.getCurrentTimeStringFrom
+
 import scala.io.Source
 
 object Main_A02 {

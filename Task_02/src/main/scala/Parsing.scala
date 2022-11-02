@@ -1,3 +1,4 @@
+import DB_Stuff.RedisDatabaseManager
 import JsonDefinitions.Article
 import spray.json._
 import JsonDefinitions.ArticleProtocol._
