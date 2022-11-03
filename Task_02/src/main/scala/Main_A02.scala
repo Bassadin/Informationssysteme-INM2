@@ -5,7 +5,7 @@ import scala.io.Source
 
 object Main_A02 {
     val JSON_PATH = "./src/data/dblp.v12.json";
-    val LOGGING_FREQUENCY_LINES = 1_000;
+    val LOGGING_FREQUENCY_LINES = 20_000;
 
     val millisecondsTimeOnStart: Long = System.currentTimeMillis();
 
