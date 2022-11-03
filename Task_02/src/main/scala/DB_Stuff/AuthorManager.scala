@@ -5,6 +5,7 @@ import JsonDefinitions.AuthorProtocol.authorFormat
 import spray.json.enrichAny
 
 object AuthorManager {
+    val authorRedisPrefix = "author_"
 
     /** Add multiple authors to the DB
       *
@@ -14,7 +15,7 @@ object AuthorManager {
     def addAuthors(authorsToAdd: List[Author]): Unit = {
 
         authorsToAdd.foreach(eachAuthor => {
-            val authorRedisSetKeyName: String = s"author_${eachAuthor.id}";
+            val authorRedisSetKeyName: String = authorRedisPrefix + eachAuthor.id;
             val authorJsonString: String = eachAuthor.toJson.compactPrint;
 
             RedisDatabaseManagerWriteMode.jedisPipeline.set(authorRedisSetKeyName, authorJsonString);

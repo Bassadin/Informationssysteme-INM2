@@ -5,6 +5,7 @@ import JsonDefinitions.ArticleProtocol.articleFormat
 import spray.json.enrichAny
 
 object ArticleManager {
+    final val articleRedisPrefix = "article_";
 
     /** Add a single article to the DB
       *
@@ -12,7 +13,7 @@ object ArticleManager {
       *   The Article to add to the DB.
       */
     def addArticle(articleToAdd: Article): Unit = {
-        val articleRedisSetKeyName: String = s"article_${articleToAdd.id}";
+        val articleRedisSetKeyName: String = articleRedisPrefix + articleToAdd.id;
         val articleJsonString: String = articleToAdd.toJson.compactPrint;
 
         RedisDatabaseManagerWriteMode.jedisPipeline.set(articleRedisSetKeyName, articleJsonString);

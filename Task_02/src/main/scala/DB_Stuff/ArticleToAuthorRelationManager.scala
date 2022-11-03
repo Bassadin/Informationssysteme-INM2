@@ -5,7 +5,7 @@ import JsonDefinitions.{Article, Author}
 import spray.json.enrichAny
 
 object ArticleToAuthorRelationManager {
-    final val authorArticleIndexAutoIncrementKey = "ai_index_relation_author_to_article";
+    final val articleToAuthorRelationRedisPrefix = "relation_article_to_article_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *
@@ -18,7 +18,7 @@ object ArticleToAuthorRelationManager {
         article: Article,
         authors: List[Author]
     ): Unit = {
-        val articleToAuthorRelationRedisSetName: String = s"relation_article_to_article_${article.id}";
+        val articleToAuthorRelationRedisSetName: String = articleToAuthorRelationRedisPrefix + article.id;
 
         val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
 
