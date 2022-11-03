@@ -6,11 +6,13 @@ import redis.clients.jedis.{Jedis, JedisPool, Pipeline}
 object RedisDatabaseManager {
     val DB_HOST = "localhost";
     val DB_PORT = 32321;
-    val jedisPipeline: Pipeline = jedisInstance.pipelined();
+
     private val jedisConnectionPool: JedisPool = new JedisPool(DB_HOST, DB_PORT);
+    private val jedisInstance: Jedis = jedisConnectionPool.getResource;
 
     jedisInstance.flushAll(FlushMode.SYNC);
-    private val jedisInstance: Jedis = jedisConnectionPool.getResource;
+
+    val jedisPipeline: Pipeline = jedisInstance.pipelined();
 
     def syncPipelineAndCloseConnection(): Unit = {
         jedisPipeline.sync();
