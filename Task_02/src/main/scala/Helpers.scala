@@ -27,8 +27,6 @@ object Helpers {
     /** Prints a status message with the elapsed time.
       * @param indexNumber
       *   How many JSON entries have been read.
-      * @param referenceTimestampMillis
-      *   The reference time to get the difference from
       */
     def printElapsedTimeStatusMessage(indexNumber: Int): Unit = {
         val indexNumberPrintString = String.format("%,d", indexNumber);
