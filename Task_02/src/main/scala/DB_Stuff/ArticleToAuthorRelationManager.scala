@@ -18,11 +18,8 @@ object ArticleToAuthorRelationManager {
         authors: List[Author]
     ): Unit = {
         authors.foreach(eachAuthor => {
-            jedisInstance.incr(authorArticleIndexAutoIncrementKey);
-            val currentAutoIncrementId = jedisInstance.get(authorArticleIndexAutoIncrementKey)
-            val articleAuthorRelationRedisSetPrefixName: String = s"relation_author_article_$currentAutoIncrementId";
-
-            val addArticleToAuthorPipeline = jedisInstance.pipelined();
+            val articleAuthorRelationRedisSetPrefixName: String = s"relation_author_article_${eachAuthor.id}_${article.id}";
+            val addArticleToAuthorPipeline = RedisDatabaseManager.jedisPipeline;
 
             addArticleToAuthorPipeline.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
             addArticleToAuthorPipeline.hset(

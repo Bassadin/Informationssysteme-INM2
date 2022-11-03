@@ -15,12 +15,10 @@ object ArticleToArticleRelationManager {
       */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticlesIDs: List[Long]): Unit = {
         referencedArticlesIDs.foreach(eachReferencedArticleID => {
-            jedisInstance.incr(articleToArticleIndexAutoIncrementKey);
-            val currentAutoIncrementId = jedisInstance.get(articleToArticleIndexAutoIncrementKey)
             val articleToArticleRelationRedisSetPrefixName: String =
-                s"relation_article_to_article_$currentAutoIncrementId";
+                s"relation_article_to_article_${referencingArticle.id}_${eachReferencedArticleID}";
 
-            val addArticleToArticleRelationPipeline = jedisInstance.pipelined();
+            val addArticleToArticleRelationPipeline = RedisDatabaseManager.jedisPipeline;
 
             addArticleToArticleRelationPipeline.hset(
               articleToArticleRelationRedisSetPrefixName,

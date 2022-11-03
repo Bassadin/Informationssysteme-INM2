@@ -11,7 +11,7 @@ object ArticleManager {
      */
     def addArticle(articleToAdd: Article): Unit = {
 
-        val addArticlePipeline = jedisInstance.pipelined();
+        val addArticlePipeline = RedisDatabaseManager.jedisPipeline;
 
         val articleRedisSetPrefixName: String = s"article_${articleToAdd.id}";
         addArticlePipeline.hset(articleRedisSetPrefixName, "title", articleToAdd.title);

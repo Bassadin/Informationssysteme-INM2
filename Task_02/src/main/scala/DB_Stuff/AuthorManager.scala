@@ -13,13 +13,7 @@ object AuthorManager {
 
         authorsToAdd.foreach(eachAuthor => {
             val authorRedisSetPrefixName: String = s"author_${eachAuthor.id}";
-
-            // Return out if author key already exists
-            if (jedisInstance.keys(authorRedisSetPrefixName).size() > 0) {
-                return;
-            }
-
-            val addAuthorsPipeline = jedisInstance.pipelined();
+            val addAuthorsPipeline = RedisDatabaseManager.jedisPipeline;
 
             addAuthorsPipeline.hset(authorRedisSetPrefixName, "title", eachAuthor.name);
 

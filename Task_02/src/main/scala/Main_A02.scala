@@ -5,12 +5,12 @@ import scala.io.Source
 
 object Main_A02 {
     val JSON_PATH = "./src/data/dblp.v12.json";
-    val LOGGING_FREQUENCY_LINES = 2_000;
+    val LOGGING_FREQUENCY_LINES = 1_000;
+
     val millisecondsTimeOnStart: Long = System.currentTimeMillis();
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
-        val millisecondsTimeOnStart = System.currentTimeMillis();
 
         println("Starting...");
 
@@ -36,7 +36,7 @@ object Main_A02 {
         println("Finished parsing JSON file.");
 
         jsonFileSource.close();
-        RedisDatabaseManager.closeConnection();
+        RedisDatabaseManager.syncPipelineAndCloseConnection();
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");

@@ -1,4 +1,10 @@
-import DB_Stuff.RedisDatabaseManager
+import DB_Stuff.{
+    ArticleManager,
+    ArticleToArticleRelationManager,
+    ArticleToAuthorRelationManager,
+    AuthorManager,
+    RedisDatabaseManager
+}
 import JsonDefinitions.Article
 import spray.json._
 import JsonDefinitions.ArticleProtocol._
@@ -19,17 +25,17 @@ object Parsing {
         val cleanedLineString = eachLineString.replace("\uFFFF", "?").replaceFirst("^,", "");
         val parsedArticle: Article = cleanedLineString.parseJson.convertTo[Article];
 
-        RedisDatabaseManager.addArticle(parsedArticle);
+        ArticleManager.addArticle(parsedArticle);
 
         parsedArticle.authors match {
             case Some(i) =>
-                RedisDatabaseManager.addAuthors(i);
-                RedisDatabaseManager.addArticleToAuthorsRelation(parsedArticle, i);
+                AuthorManager.addAuthors(i);
+                ArticleToAuthorRelationManager.addArticleToAuthorsRelation(parsedArticle, i);
             case None =>
         }
 
         parsedArticle.references match {
-            case Some(i) => RedisDatabaseManager.addArticleToArticlesRelation(parsedArticle, i);
+            case Some(i) => ArticleToArticleRelationManager.addArticleToArticlesRelation(parsedArticle, i);
             case None    =>
         }
     }
