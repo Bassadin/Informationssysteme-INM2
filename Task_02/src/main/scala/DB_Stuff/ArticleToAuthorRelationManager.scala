@@ -28,7 +28,6 @@ object ArticleToAuthorRelationManager {
               eachAuthor.id.toString
             );
 
-            addArticleToAuthorPipeline.sync();
         });
     }
 }

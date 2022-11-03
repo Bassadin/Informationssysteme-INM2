@@ -34,6 +34,5 @@ object ArticleManager {
             case None =>
         }
 
-        addArticlePipeline.sync();
     }
 }

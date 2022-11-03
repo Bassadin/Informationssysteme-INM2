@@ -22,7 +22,6 @@ object AuthorManager {
                 case None =>
             }
 
-            addAuthorsPipeline.sync();
         });
     }
 }

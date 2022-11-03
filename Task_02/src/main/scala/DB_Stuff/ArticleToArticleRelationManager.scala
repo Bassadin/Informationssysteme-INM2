@@ -31,7 +31,6 @@ object ArticleToArticleRelationManager {
               eachReferencedArticleID.toString
             );
 
-            addArticleToArticleRelationPipeline.sync();
         })
     }
 }
