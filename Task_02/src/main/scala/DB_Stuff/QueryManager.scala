@@ -11,5 +11,6 @@ object QueryManager {
 
     // TODO
     def mostArticles(): List[Author] = ???;
-    def distinctAuthors(): Long = ???;
+    def distinctAuthorsExact(): Long = ???;
+    def distinctAuthorsHyperLogLog(): Long = ???;
 }
