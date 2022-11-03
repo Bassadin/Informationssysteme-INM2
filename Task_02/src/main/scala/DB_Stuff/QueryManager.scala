@@ -4,12 +4,12 @@ import JsonDefinitions.{Article, Author}
 
 object QueryManager {
     // TODO
-    def titleByID(articleID: Long): String = null;
-    def authors(articleID: Long): List[Author] = null;
-    def articles(authorID: Long): List[Article] = null;
-    def referencedBy(articleID: Long): List[Article] = null;
+    def titleByID(articleID: Long): String = ???;
+    def authors(articleID: Long): List[Author] = ???;
+    def articles(authorID: Long): List[Article] = ???;
+    def referencedBy(articleID: Long): List[Article] = ???;
 
     // TODO
-    def mostArticles(): List[Author] = null;
-    def distinctAuthors(): Long = null;
+    def mostArticles(): List[Author] = ???;
+    def distinctAuthors(): Long = ???;
 }
