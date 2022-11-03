@@ -1,6 +1,8 @@
 package DB_Stuff
 
 import JsonDefinitions.Author
+import JsonDefinitions.AuthorProtocol.authorFormat
+import spray.json.enrichAny
 
 object AuthorManager {
 
@@ -12,15 +14,10 @@ object AuthorManager {
     def addAuthors(authorsToAdd: List[Author]): Unit = {
 
         authorsToAdd.foreach(eachAuthor => {
-            val authorRedisSetPrefixName: String = s"author_${eachAuthor.id}";
-            val addAuthorsPipeline = RedisDatabaseManager.jedisPipeline;
+            val authorRedisSetKeyName: String = s"author_${eachAuthor.id}";
+            val authorJsonString: String = eachAuthor.toJson.compactPrint;
 
-            addAuthorsPipeline.hset(authorRedisSetPrefixName, "title", eachAuthor.name);
-
-            eachAuthor.org match {
-                case Some(i) => addAuthorsPipeline.hset(authorRedisSetPrefixName, "org", i);
-                case None    =>
-            }
+            RedisDatabaseManager.jedisPipeline.set(authorRedisSetKeyName, authorJsonString);
         });
     }
 }

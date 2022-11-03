@@ -1,6 +1,8 @@
 package DB_Stuff
 
+import JsonDefinitions.AuthorProtocol.{LongJsonFormat, listFormat}
 import JsonDefinitions.{Article, Author}
+import spray.json.enrichAny
 
 object ArticleToAuthorRelationManager {
     final val authorArticleIndexAutoIncrementKey = "ai_index_relation_author_to_article";
@@ -17,16 +19,15 @@ object ArticleToAuthorRelationManager {
         authors: List[Author]
     ): Unit = {
         authors.foreach(eachAuthor => {
-            val articleAuthorRelationRedisSetPrefixName: String =
-                s"relation_author_article_${eachAuthor.id}_${article.id}";
-            val addArticleToAuthorPipeline = RedisDatabaseManager.jedisPipeline;
+            val articleToAuthorRelationRedisSetName: String = s"relation_article_to_article_${article.id}";
 
-            addArticleToAuthorPipeline.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
-            addArticleToAuthorPipeline.hset(
-              articleAuthorRelationRedisSetPrefixName,
-              "author_id",
-              eachAuthor.id.toString
+            val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
+
+            RedisDatabaseManager.jedisPipeline.set(
+              articleToAuthorRelationRedisSetName,
+              authorIDsListJsonString
             );
+
         });
     }
 }

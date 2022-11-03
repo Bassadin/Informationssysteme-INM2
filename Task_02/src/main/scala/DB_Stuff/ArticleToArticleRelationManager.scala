@@ -1,6 +1,8 @@
 package DB_Stuff
 
 import JsonDefinitions.Article
+import JsonDefinitions.AuthorProtocol.{LongJsonFormat, listFormat}
+import spray.json.enrichAny
 
 object ArticleToArticleRelationManager {
     final val articleToArticleIndexAutoIncrementKey = "ai_index_relation_article_to_article";
@@ -13,22 +15,14 @@ object ArticleToArticleRelationManager {
       *   The articles that are being referenced in form of IDs.
       */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticlesIDs: List[Long]): Unit = {
-        referencedArticlesIDs.foreach(eachReferencedArticleID => {
-            val articleToArticleRelationRedisSetPrefixName: String =
-                s"relation_article_to_article_${referencingArticle.id}_${eachReferencedArticleID}";
+        val articleToArticleRelationRedisSetName: String =
+            s"relation_article_to_article_${referencingArticle.id}";
 
-            val addArticleToArticleRelationPipeline = RedisDatabaseManager.jedisPipeline;
+        val referencedArticleIDsListJsonString = referencedArticlesIDs.toJson.compactPrint;
 
-            addArticleToArticleRelationPipeline.hset(
-              articleToArticleRelationRedisSetPrefixName,
-              "referencing_article_id",
-              referencingArticle.id.toString
-            );
-            addArticleToArticleRelationPipeline.hset(
-              articleToArticleRelationRedisSetPrefixName,
-              "referenced_article_id",
-              eachReferencedArticleID.toString
-            );
-        })
+        RedisDatabaseManager.jedisPipeline.set(
+          articleToArticleRelationRedisSetName,
+          referencedArticleIDsListJsonString
+        );
     }
 }
