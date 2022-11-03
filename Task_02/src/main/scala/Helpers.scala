@@ -1,17 +1,20 @@
+import Main_A02.millisecondsTimeOnStart
+
 import scala.io.Source
 
 object Helpers {
 
     /** Get the passed time from a given time in the format `[minutes]m [seconds]s`
-      * @param startTimeMillis
+      * @param endTimeMillis
       *   The reference time to get the difference from in milliseconds
       * @return
       *   The formatted time difference
       */
-    def getCurrentTimeStringFrom(startTimeMillis: Long): String = {
-        val currentTimeMillis = System.currentTimeMillis();
-
-        val timeDifferenceMillis = currentTimeMillis - startTimeMillis;
+    def getTimeDifferenceStringBetween(
+        endTimeMillis: Long,
+        referenceStartTime: Long = System.currentTimeMillis()
+    ): String = {
+        val timeDifferenceMillis = referenceStartTime - endTimeMillis;
 
         val minutes = (timeDifferenceMillis / 1000) / 60
         val seconds = (timeDifferenceMillis / 1000) % 60
@@ -19,16 +22,25 @@ object Helpers {
         s"${minutes}m ${seconds}s";
     }
 
+    var lastLineTimestamp: Long = 0L;
+
     /** Prints a status message with the elapsed time.
       * @param indexNumber
       *   How many JSON entries have been read.
       * @param referenceTimestampMillis
       *   The reference time to get the difference from
       */
-    def printElapsedTimeStatusMessage(indexNumber: Int, referenceTimestampMillis: Long): Unit = {
+    def printElapsedTimeStatusMessage(indexNumber: Int): Unit = {
         val indexNumberPrintString = String.format("%,d", indexNumber);
+        val elapsedTimeString = getTimeDifferenceStringBetween(millisecondsTimeOnStart);
+        val deltaTimeString =
+            if (lastLineTimestamp == 0) "0"
+            else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
+
         println(
-          s"| - Parsed line $indexNumberPrintString - Elapsed Time: ${getCurrentTimeStringFrom(referenceTimestampMillis)}"
+          s"| - Parsed line $indexNumberPrintString - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
         );
+
+        lastLineTimestamp = System.currentTimeMillis();
     }
 }
