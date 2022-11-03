@@ -5,8 +5,8 @@ object A02_Test {
     def main(args: Array[String]): Unit = {
         println("Starting...");
 
-        println(QueryManager.titleByID(2739457533L));
-        println(QueryManager.authors(2739457533L));
+        println(QueryManager.titleByID(1091));
+        println(QueryManager.authors(1091));
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");

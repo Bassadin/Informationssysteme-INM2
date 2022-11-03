@@ -13,7 +13,6 @@ object AuthorManager {
       *   The list of authors to add.
       */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
-
         authorsToAdd.foreach(eachAuthor => {
             val authorRedisSetKeyName: String = authorRedisPrefix + eachAuthor.id;
             val authorJsonString: String = eachAuthor.toJson.compactPrint;
