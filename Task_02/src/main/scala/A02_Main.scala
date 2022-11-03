@@ -1,14 +1,12 @@
 import Additional.{CSVLogger, Helpers, Parsing}
 import DB_Stuff.RedisDatabaseManagerWriteMode
-import Additional.Helpers.getTimeDifferenceStringBetween
+import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 
 import scala.io.Source
 
 object A02_Main {
     val JSON_PATH = "./src/data/dblp.v12.json";
     val LOGGING_FREQUENCY_LINES = 50_000;
-
-    val millisecondsTimeOnStart: Long = System.currentTimeMillis();
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe

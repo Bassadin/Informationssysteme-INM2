@@ -6,6 +6,8 @@ object Helpers {
 
     var lastLineTimestamp: Long = 0L;
 
+    val millisecondsTimeOnStart: Long = System.currentTimeMillis();
+
     /** Prints a status message with the elapsed time.
       * @param indexNumber
       *   How many JSON entries have been read.
