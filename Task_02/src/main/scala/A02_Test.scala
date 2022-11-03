@@ -4,7 +4,7 @@ import Additional.Helpers.getTimeDifferenceStringBetween
 
 import scala.io.Source
 
-object A02_Main {
+object A02_Test {
     val JSON_PATH = "./src/data/dblp.v12.json";
     val LOGGING_FREQUENCY_LINES = 50_000;
 

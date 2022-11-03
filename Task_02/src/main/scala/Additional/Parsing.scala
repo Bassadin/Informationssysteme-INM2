@@ -1,7 +1,7 @@
+package Additional
+
 import DB_Stuff.{ArticleManager, ArticleToArticleRelationManager, ArticleToAuthorRelationManager, AuthorManager}
 import JsonDefinitions.Article
-import JsonDefinitions.ArticleProtocol._
-import spray.json._
 
 object Parsing {
 
