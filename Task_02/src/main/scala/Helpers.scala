@@ -1,5 +1,7 @@
 import Main_A02.millisecondsTimeOnStart
 
+import java.time.Duration
+
 object Helpers {
 
     var lastLineTimestamp: Long = 0L;
@@ -32,11 +34,8 @@ object Helpers {
         endTimeMillis: Long,
         referenceStartTime: Long = System.currentTimeMillis()
     ): String = {
-        val timeDifferenceMillis = referenceStartTime - endTimeMillis;
+        val duration = Duration.ofMillis(referenceStartTime - endTimeMillis);
 
-        val minutes = (timeDifferenceMillis / 1000) / 60
-        val seconds = (timeDifferenceMillis / 1000) % 60
-
-        s"${minutes}m ${seconds}s";
+        s"${duration.toMinutesPart}m ${duration.toSecondsPart}s ${duration.toMillisPart}ms";
     }
 }
