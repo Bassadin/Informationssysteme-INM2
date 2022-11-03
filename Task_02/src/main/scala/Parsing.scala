@@ -1,13 +1,7 @@
-import DB_Stuff.{
-    ArticleManager,
-    ArticleToArticleRelationManager,
-    ArticleToAuthorRelationManager,
-    AuthorManager,
-    RedisDatabaseManager
-}
+import DB_Stuff.{ArticleManager, ArticleToArticleRelationManager, ArticleToAuthorRelationManager, AuthorManager}
 import JsonDefinitions.Article
-import spray.json._
 import JsonDefinitions.ArticleProtocol._
+import spray.json._
 
 object Parsing {
 

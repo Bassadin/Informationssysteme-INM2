@@ -1,6 +1,5 @@
 package DB_Stuff
 
-import DB_Stuff.RedisDatabaseManager.jedisInstance
 import JsonDefinitions.Article
 
 object ArticleToArticleRelationManager {
@@ -30,7 +29,6 @@ object ArticleToArticleRelationManager {
               "referenced_article_id",
               eachReferencedArticleID.toString
             );
-
         })
     }
 }

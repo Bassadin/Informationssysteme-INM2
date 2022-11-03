@@ -1,6 +1,5 @@
 package DB_Stuff
 
-import DB_Stuff.RedisDatabaseManager.jedisInstance
 import JsonDefinitions.{Article, Author}
 
 object ArticleToAuthorRelationManager {
@@ -18,7 +17,8 @@ object ArticleToAuthorRelationManager {
         authors: List[Author]
     ): Unit = {
         authors.foreach(eachAuthor => {
-            val articleAuthorRelationRedisSetPrefixName: String = s"relation_author_article_${eachAuthor.id}_${article.id}";
+            val articleAuthorRelationRedisSetPrefixName: String =
+                s"relation_author_article_${eachAuthor.id}_${article.id}";
             val addArticleToAuthorPipeline = RedisDatabaseManager.jedisPipeline;
 
             addArticleToAuthorPipeline.hset(articleAuthorRelationRedisSetPrefixName, "article_id", article.id.toString);
@@ -27,7 +27,6 @@ object ArticleToAuthorRelationManager {
               "author_id",
               eachAuthor.id.toString
             );
-
         });
     }
 }
