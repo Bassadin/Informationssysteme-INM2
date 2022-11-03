@@ -3,9 +3,9 @@ import Helpers.getTimeDifferenceStringBetween
 
 import scala.io.Source
 
-object Main_A02 {
+object A02_Main {
     val JSON_PATH = "./src/data/dblp.v12.json";
-    val LOGGING_FREQUENCY_LINES = 20_000;
+    val LOGGING_FREQUENCY_LINES = 50_000;
 
     val millisecondsTimeOnStart: Long = System.currentTimeMillis();
 

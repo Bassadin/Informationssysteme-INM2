@@ -1,4 +1,4 @@
-import Main_A02.millisecondsTimeOnStart
+import A02_Main.millisecondsTimeOnStart
 
 import java.time.Duration
 
