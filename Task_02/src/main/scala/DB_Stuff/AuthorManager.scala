@@ -17,7 +17,7 @@ object AuthorManager {
             val authorRedisSetKeyName: String = s"author_${eachAuthor.id}";
             val authorJsonString: String = eachAuthor.toJson.compactPrint;
 
-            RedisDatabaseManager.jedisPipeline.set(authorRedisSetKeyName, authorJsonString);
+            RedisDatabaseManagerWriteMode.jedisPipeline.set(authorRedisSetKeyName, authorJsonString);
         });
     }
 }

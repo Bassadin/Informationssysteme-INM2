@@ -20,7 +20,7 @@ object ArticleToArticleRelationManager {
 
         val referencedArticleIDsListJsonString = referencedArticlesIDs.toJson.compactPrint;
 
-        RedisDatabaseManager.jedisPipeline.set(
+        RedisDatabaseManagerWriteMode.jedisPipeline.set(
           articleToArticleRelationRedisSetName,
           referencedArticleIDsListJsonString
         );

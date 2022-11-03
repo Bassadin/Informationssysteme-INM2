@@ -1,5 +1,5 @@
 import Additional.{CSVLogger, Helpers, Parsing}
-import DB_Stuff.RedisDatabaseManager
+import DB_Stuff.RedisDatabaseManagerWriteMode
 import Additional.Helpers.getTimeDifferenceStringBetween
 
 import scala.io.Source
@@ -37,7 +37,7 @@ object A02_Test {
         println("Finished parsing JSON file.");
 
         jsonFileSource.close();
-        RedisDatabaseManager.syncPipelineAndCloseConnection();
+        RedisDatabaseManagerWriteMode.syncPipelineAndCloseConnection();
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");

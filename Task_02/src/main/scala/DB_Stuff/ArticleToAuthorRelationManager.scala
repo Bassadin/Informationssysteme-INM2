@@ -22,7 +22,7 @@ object ArticleToAuthorRelationManager {
 
         val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
 
-        RedisDatabaseManager.jedisPipeline.set(
+        RedisDatabaseManagerWriteMode.jedisPipeline.set(
           articleToAuthorRelationRedisSetName,
           authorIDsListJsonString
         );

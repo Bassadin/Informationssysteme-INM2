@@ -15,6 +15,6 @@ object ArticleManager {
         val articleRedisSetKeyName: String = s"article_${articleToAdd.id}";
         val articleJsonString: String = articleToAdd.toJson.compactPrint;
 
-        RedisDatabaseManager.jedisPipeline.set(articleRedisSetKeyName, articleJsonString);
+        RedisDatabaseManagerWriteMode.jedisPipeline.set(articleRedisSetKeyName, articleJsonString);
     }
 }

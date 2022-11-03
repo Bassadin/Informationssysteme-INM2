@@ -3,7 +3,7 @@ package DB_Stuff
 import redis.clients.jedis.args.FlushMode
 import redis.clients.jedis.{Jedis, JedisPool, Pipeline}
 
-object RedisDatabaseManager {
+object RedisDatabaseManagerWriteMode {
     final val DB_HOST = "localhost";
     final val DB_PORT = 32321;
 
