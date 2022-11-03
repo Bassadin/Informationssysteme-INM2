@@ -18,16 +18,13 @@ object ArticleToAuthorRelationManager {
         article: Article,
         authors: List[Author]
     ): Unit = {
-        authors.foreach(eachAuthor => {
-            val articleToAuthorRelationRedisSetName: String = s"relation_article_to_article_${article.id}";
+        val articleToAuthorRelationRedisSetName: String = s"relation_article_to_article_${article.id}";
 
-            val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
+        val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
 
-            RedisDatabaseManager.jedisPipeline.set(
-              articleToAuthorRelationRedisSetName,
-              authorIDsListJsonString
-            );
-
-        });
+        RedisDatabaseManager.jedisPipeline.set(
+          articleToAuthorRelationRedisSetName,
+          authorIDsListJsonString
+        );
     }
 }
