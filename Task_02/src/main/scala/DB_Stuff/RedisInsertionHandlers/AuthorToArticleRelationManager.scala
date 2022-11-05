@@ -4,7 +4,7 @@ import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.{Article, Author}
 
 object AuthorToArticleRelationManager extends RedisManagerTrait {
-    final val redisPrefix = "relation_author_to_article_";
+    final val redisPrefix = "r_auth-article_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *

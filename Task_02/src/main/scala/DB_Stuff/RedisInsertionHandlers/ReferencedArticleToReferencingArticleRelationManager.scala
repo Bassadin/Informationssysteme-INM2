@@ -4,7 +4,7 @@ import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.Article
 
 object ReferencedArticleToReferencingArticleRelationManager extends RedisManagerTrait {
-    final val redisPrefix = "relation_referenced_article_to_referencing_article_";
+    final val redisPrefix = "r_referenced_arti-referencing_arti_";
 
     /** Add to the DB multiple articles that are being referenced by another article.
       *

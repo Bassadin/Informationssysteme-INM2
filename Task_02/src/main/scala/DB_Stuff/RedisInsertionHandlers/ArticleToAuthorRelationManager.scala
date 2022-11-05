@@ -6,7 +6,7 @@ import JsonDefinitions.{Article, Author}
 import spray.json.enrichAny
 
 object ArticleToAuthorRelationManager extends RedisManagerTrait {
-    final val redisPrefix = "relation_article_to_author_";
+    final val redisPrefix = "r_arti-author_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *

@@ -6,7 +6,7 @@ import JsonDefinitions.ArticleProtocol.articleFormat
 import spray.json.enrichAny
 
 object ArticleManager extends RedisManagerTrait {
-    final val redisPrefix = "article_";
+    final val redisPrefix = "arti_";
 
     /** Add a single article to the DB
       *
