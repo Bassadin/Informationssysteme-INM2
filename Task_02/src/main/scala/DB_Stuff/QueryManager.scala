@@ -70,7 +70,12 @@ object QueryManager {
     };
 
     // TODO
-    def mostArticles(): List[Author] = ???;
-    def distinctAuthorsExact(): Long = ???;
+//    def mostArticles(): List[Author] = {
+////        RedisDatabaseManagerReadMode.jedisInstance.sscan(AuthorToArticleRelationManager.redisPrefix, );
+//    };
+
+    def distinctAuthorsExact(): Long = {
+        RedisDatabaseManagerReadMode.jedisInstance.keys(AuthorManager.redisPrefix + "*").size();
+    };
     def distinctAuthorsHyperLogLog(): Long = ???;
 }
