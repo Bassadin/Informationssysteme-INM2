@@ -28,6 +28,10 @@ object A02_QueryTestMain {
         println(QueryManager.distinctAuthorsExact());
         println(s"Elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
 
+        println("Amount of distinct authors with HyperLogLog:");
+        println(QueryManager.distinctAuthorsHyperLogLog());
+        println(s"Elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
+
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");
     }

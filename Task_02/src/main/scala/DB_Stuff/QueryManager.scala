@@ -1,6 +1,6 @@
 package DB_Stuff
 
-import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencedArticleToReferencingArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
+import DB_Stuff.RedisInsertionHandlers._
 import JsonDefinitions.ArticleProtocol.articleFormat
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, authorFormat, listFormat}
 import JsonDefinitions.{Article, Author}
@@ -53,7 +53,7 @@ object QueryManager {
     def referencedBy(articleID: Long): List[Article] = {
         val referencedArticleIDListForReferencingArticleJson: util.Set[String] =
             RedisDatabaseManagerReadMode.jedisInstance.smembers(
-                ReferencedArticleToReferencingArticleRelationManager.redisPrefix + articleID.toString
+              ReferencedArticleToReferencingArticleRelationManager.redisPrefix + articleID.toString
             );
 
         val referencedByArticleList: List[Article] = referencedArticleIDListForReferencingArticleJson
@@ -75,7 +75,9 @@ object QueryManager {
 //    };
 
     def distinctAuthorsExact(): Long = {
-        RedisDatabaseManagerReadMode.jedisInstance.keys(AuthorManager.redisPrefix + "*").size();
+        RedisDatabaseManagerReadMode.jedisInstance.scard(AuthorManager.AUTHORS_IDS_EXACT_SET_KEY);
     };
-    def distinctAuthorsHyperLogLog(): Long = ???;
+    def distinctAuthorsHyperLogLog(): Long = {
+        RedisDatabaseManagerReadMode.jedisInstance.pfcount(AuthorManager.AUTHORS_IDS_PF_SET_KEY);
+    };
 }
