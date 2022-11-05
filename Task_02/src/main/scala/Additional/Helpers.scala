@@ -4,6 +4,8 @@ import java.time.Duration
 
 object Helpers {
 
+    private final val REFERENCE_FILE_LINES_AMOUNT = 4_900_000;
+
     private var lastLineTimestamp: Long = 0L;
 
     var millisecondsTimeOnStart: Long = System.currentTimeMillis();
@@ -25,8 +27,10 @@ object Helpers {
             if (lastLineTimestamp == 0) "0"
             else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
 
+        val completionPercentage = indexNumber / REFERENCE_FILE_LINES_AMOUNT;
+
         println(
-          s"| - Parsed line $indexNumberPrintString - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
+          s"| - Parsed line $indexNumberPrintString ($completionPercentage%) - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
         );
 
         lastLineTimestamp = System.currentTimeMillis();
