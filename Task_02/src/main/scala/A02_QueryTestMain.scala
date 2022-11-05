@@ -1,6 +1,7 @@
 import Additional.Helpers
 import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 import DB_Stuff.QueryManager
+import JsonDefinitions.Author
 
 object A02_QueryTestMain {
     def main(args: Array[String]): Unit = {
@@ -30,6 +31,12 @@ object A02_QueryTestMain {
 
         println("Amount of distinct authors with HyperLogLog:");
         println(QueryManager.distinctAuthorsHyperLogLog());
+        println(s"Elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
+
+        println("Authors with the most articles:");
+        val authorWithMostArticles: Author = QueryManager.mostArticles().head;
+        println(authorWithMostArticles);
+        println("Amount: " + QueryManager.articles(authorWithMostArticles.id).length);
         println(s"Elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
