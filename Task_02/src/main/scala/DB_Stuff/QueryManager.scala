@@ -1,6 +1,6 @@
 package DB_Stuff
 
-import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
+import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencedArticleToReferencingArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
 import JsonDefinitions.ArticleProtocol.articleFormat
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, authorFormat, listFormat}
 import JsonDefinitions.{Article, Author}
@@ -53,7 +53,7 @@ object QueryManager {
     def referencedBy(articleID: Long): List[Article] = {
         val referencedArticleIDListForReferencingArticleJson: util.Set[String] =
             RedisDatabaseManagerReadMode.jedisInstance.smembers(
-              ReferencingArticleToReferencedArticleRelationManager.redisPrefix + articleID.toString
+                ReferencedArticleToReferencingArticleRelationManager.redisPrefix + articleID.toString
             );
 
         val referencedByArticleList: List[Article] = referencedArticleIDListForReferencingArticleJson
