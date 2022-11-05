@@ -6,7 +6,6 @@ import spray.json.enrichAny
 
 object ArticleToAuthorRelationManager {
     final val articleToAuthorRelationRedisPrefix = "relation_article_to_author_";
-    final val authorToArticleRelationRedisPrefix = "relation_author_to_article_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *
@@ -27,10 +26,5 @@ object ArticleToAuthorRelationManager {
           articleToAuthorRelationRedisSetName,
           authorIDsListJsonString
         );
-
-        authors.foreach(eachAuthor => {
-            RedisDatabaseManagerWriteMode.jedisPipeline
-                .sadd(authorToArticleRelationRedisPrefix + eachAuthor.id, article.id.toString);
-        })
     }
 }

@@ -1,9 +1,9 @@
 package Additional
 
-import DB_Stuff.{ArticleManager, ArticleToArticleRelationManager, ArticleToAuthorRelationManager, AuthorManager}
-import spray.json._
+import DB_Stuff._
 import JsonDefinitions.Article
 import JsonDefinitions.ArticleProtocol.articleFormat
+import spray.json._
 
 object Parsing {
 
@@ -27,6 +27,7 @@ object Parsing {
             case Some(i) =>
                 AuthorManager.addAuthors(i);
                 ArticleToAuthorRelationManager.addArticleToAuthorsRelation(parsedArticle, i);
+                AuthorToArticleRelationManager.addAuthorToArticleRelation(i, parsedArticle);
             case None =>
         }
 
