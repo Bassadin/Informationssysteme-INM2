@@ -1,6 +1,6 @@
+import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 import Additional.{CSVLogger, Helpers, Parsing}
 import DB_Stuff.RedisDatabaseManagerWriteMode
-import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 
 import scala.io.Source
 
@@ -25,11 +25,18 @@ object A02_ParseJsonMain {
         jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, eachIndex) =>
             Parsing.handleLineString(eachLineString);
 
-            if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
-                Helpers.printElapsedTimeStatusMessage(eachIndex);
+            if (eachIndex > 0) {
+                if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
+                    Helpers.printElapsedTimeStatusMessage(eachIndex);
 
-                val elapsedMilliseconds = System.currentTimeMillis() - millisecondsTimeOnStart;
-                CSVLogger.writeTimeLoggingRow(elapsedMilliseconds, eachIndex);
+                    val elapsedMilliseconds = System.currentTimeMillis() - millisecondsTimeOnStart;
+                    CSVLogger.writeTimeLoggingRow(elapsedMilliseconds, eachIndex);
+                }
+                // Sync the pipeline every x lines to save on client RAM
+                if (eachIndex % RedisDatabaseManagerWriteMode.PIPELINE_SYNC_LINE_FREQUENCY == 0) {
+                    println("Syncing pipeline...")
+                    RedisDatabaseManagerWriteMode.jedisPipeline.sync();
+                }
             }
         };
         println("Finished parsing JSON file.");

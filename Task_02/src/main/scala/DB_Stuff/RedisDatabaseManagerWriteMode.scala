@@ -7,6 +7,8 @@ object RedisDatabaseManagerWriteMode {
     final val DB_HOST = "localhost";
     final val DB_PORT = 32321;
 
+    final val PIPELINE_SYNC_LINE_FREQUENCY = 200_000;
+
     private val jedisConnectionPool: JedisPool = new JedisPool(DB_HOST, DB_PORT);
     private val jedisInstance: Jedis = jedisConnectionPool.getResource;
 
