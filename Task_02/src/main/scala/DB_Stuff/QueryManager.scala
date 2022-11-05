@@ -1,6 +1,6 @@
 package DB_Stuff
 
-import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager}
+import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
 import JsonDefinitions.ArticleProtocol.articleFormat
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, authorFormat, listFormat}
 import JsonDefinitions.{Article, Author}
@@ -34,7 +34,7 @@ object QueryManager {
     };
     def articles(authorID: Long): List[Article] = {
         val articleIDListForAuthorJson: util.Set[String] = RedisDatabaseManagerReadMode.jedisInstance.smembers(
-          ArticleToAuthorRelationManager.authorToArticleRelationRedisPrefix + authorID.toString
+          AuthorToArticleRelationManager.redisPrefix + authorID.toString
         );
 
         val articleList: List[Article] = articleIDListForAuthorJson
@@ -50,7 +50,24 @@ object QueryManager {
 
         articleList;
     };
-    def referencedBy(articleID: Long): List[Article] = ???;
+    def referencedBy(articleID: Long): List[Article] = {
+        val referencedArticleIDListForReferencingArticleJson: util.Set[String] =
+            RedisDatabaseManagerReadMode.jedisInstance.smembers(
+              ReferencingArticleToReferencedArticleRelationManager.redisPrefix + articleID.toString
+            );
+
+        val referencedByArticleList: List[Article] = referencedArticleIDListForReferencingArticleJson
+            .toArray()
+            .map(eachReferencedByArticleIDString => {
+                val redisArticleJsonString: String = RedisDatabaseManagerReadMode.jedisInstance
+                    .get(ArticleManager.redisPrefix + eachReferencedByArticleIDString);
+
+                redisArticleJsonString.parseJson.convertTo[Article];
+            })
+            .toList;
+
+        referencedByArticleList;
+    };
 
     // TODO
     def mostArticles(): List[Author] = ???;
