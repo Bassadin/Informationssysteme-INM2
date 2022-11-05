@@ -1,7 +1,7 @@
 import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 import DB_Stuff.QueryManager
 
-object A02_Test {
+object A02_QueryTestMain {
     def main(args: Array[String]): Unit = {
         println("Starting...");
 

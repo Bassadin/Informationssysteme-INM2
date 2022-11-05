@@ -4,7 +4,7 @@ import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnSta
 
 import scala.io.Source
 
-object A02_Main {
+object A02_ParseJsonMain {
     val JSON_PATH = "./src/data/dblp.v12.json";
     val LOGGING_FREQUENCY_LINES = 50_000;
 
