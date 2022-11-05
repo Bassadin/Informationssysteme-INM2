@@ -1,6 +1,6 @@
 import Additional.Helpers
 import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
-import DB_Stuff.QueryManager
+import DB_Stuff.{QueryManager, RedisDatabaseManagerReadMode}
 import JsonDefinitions.Author
 
 object A02_QueryTestMain {
@@ -40,6 +40,9 @@ object A02_QueryTestMain {
         println(s"Elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
+
+        RedisDatabaseManagerReadMode.closeConnection();
+
         println("Terminated.");
     }
 }
