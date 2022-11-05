@@ -18,6 +18,9 @@ object RedisDatabaseManagerWriteMode {
 
     val jedisPipeline: Pipeline = jedisInstance.pipelined();
 
+    /*
+    Sync Pipeline and close the connection pool
+     */
     def syncPipelineAndCloseConnection(): Unit = {
         jedisPipeline.sync();
         jedisConnectionPool.close();

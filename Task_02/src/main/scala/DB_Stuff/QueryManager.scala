@@ -8,6 +8,9 @@ import spray.json._
 
 import java.util
 
+/*
+Handles querying methods for the redis database
+ */
 object QueryManager {
     def titleByID(articleID: Long): String = {
         val articleJson: String =
