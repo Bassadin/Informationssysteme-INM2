@@ -1,11 +1,12 @@
-package DB_Stuff
+package DB_Stuff.RedisInsertionHandlers
 
+import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, listFormat}
 import JsonDefinitions.{Article, Author}
 import spray.json.enrichAny
 
-object ArticleToAuthorRelationManager {
-    final val articleToAuthorRelationRedisPrefix = "relation_article_to_author_";
+object ArticleToAuthorRelationManager extends RedisManagerTrait {
+    final val redisPrefix = "relation_article_to_author_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *
@@ -14,11 +15,11 @@ object ArticleToAuthorRelationManager {
       * @param authors
       *   The authors to add to the relation.
       */
-    def addArticleToAuthorsRelation(
+    def addRelation(
         article: Article,
         authors: List[Author]
     ): Unit = {
-        val articleToAuthorRelationRedisSetName: String = articleToAuthorRelationRedisPrefix + article.id;
+        val articleToAuthorRelationRedisSetName: String = redisPrefix + article.id;
 
         val authorIDsListJsonString = authors.map(author => author.id).toJson.compactPrint;
 

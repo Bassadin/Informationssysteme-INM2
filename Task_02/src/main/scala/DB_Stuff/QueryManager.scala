@@ -1,5 +1,6 @@
 package DB_Stuff
 
+import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager}
 import JsonDefinitions.ArticleProtocol.articleFormat
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, authorFormat, listFormat}
 import JsonDefinitions.{Article, Author}
@@ -11,20 +12,20 @@ object QueryManager {
     // TODO
     def titleByID(articleID: Long): String = {
         val articleJson: String =
-            RedisDatabaseManagerReadMode.jedisInstance.get(ArticleManager.articleRedisPrefix + articleID);
+            RedisDatabaseManagerReadMode.jedisInstance.get(ArticleManager.redisPrefix + articleID);
         articleJson.parseJson.convertTo[Article].title;
     };
 
     def authors(articleID: Long): List[Author] = {
         val authorIDListForArticleJson: String = RedisDatabaseManagerReadMode.jedisInstance.get(
-          ArticleToAuthorRelationManager.articleToAuthorRelationRedisPrefix + articleID
+          ArticleToAuthorRelationManager.redisPrefix + articleID
         );
 
         val authorIDList: List[Long] = authorIDListForArticleJson.parseJson.convertTo[List[Long]];
 
         val authorList: List[Author] = authorIDList.map(authorID => {
             val redisJsonString: String = RedisDatabaseManagerReadMode.jedisInstance
-                .get(AuthorManager.authorRedisPrefix + authorID);
+                .get(AuthorManager.redisPrefix + authorID);
 
             redisJsonString.parseJson.convertTo[Author];
         })
@@ -41,7 +42,7 @@ object QueryManager {
             .map(eachArticleIDString => {
 
                 val redisArticleJsonString: String = RedisDatabaseManagerReadMode.jedisInstance
-                    .get(ArticleManager.articleRedisPrefix + eachArticleIDString);
+                    .get(ArticleManager.redisPrefix + eachArticleIDString);
 
                 redisArticleJsonString.parseJson.convertTo[Article];
             })

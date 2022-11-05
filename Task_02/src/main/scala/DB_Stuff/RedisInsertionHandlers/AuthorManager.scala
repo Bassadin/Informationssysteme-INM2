@@ -1,11 +1,12 @@
-package DB_Stuff
+package DB_Stuff.RedisInsertionHandlers
 
+import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.Author
 import JsonDefinitions.AuthorProtocol.authorFormat
 import spray.json.enrichAny
 
-object AuthorManager {
-    val authorRedisPrefix = "author_"
+object AuthorManager extends RedisManagerTrait {
+    val redisPrefix = "author_"
 
     /** Add multiple authors to the DB
       *
@@ -14,10 +15,10 @@ object AuthorManager {
       */
     def addAuthors(authorsToAdd: List[Author]): Unit = {
         authorsToAdd.foreach(eachAuthor => {
-            val authorRedisSetKeyName: String = authorRedisPrefix + eachAuthor.id;
+            val redisKeyName: String = redisPrefix + eachAuthor.id;
             val authorJsonString: String = eachAuthor.toJson.compactPrint;
 
-            RedisDatabaseManagerWriteMode.jedisPipeline.set(authorRedisSetKeyName, authorJsonString);
+            RedisDatabaseManagerWriteMode.jedisPipeline.set(redisKeyName, authorJsonString);
         });
     }
 }

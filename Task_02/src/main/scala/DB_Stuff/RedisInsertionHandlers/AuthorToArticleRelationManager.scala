@@ -1,9 +1,10 @@
-package DB_Stuff
+package DB_Stuff.RedisInsertionHandlers
 
+import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.{Article, Author}
 
-object AuthorToArticleRelationManager {
-    final val authorToArticleRelationRedisPrefix = "relation_author_to_article_";
+object AuthorToArticleRelationManager extends RedisManagerTrait {
+    final val redisPrefix = "relation_author_to_article_";
 
     /** Add to the DB a relation from an article to multiple authors.
       *
@@ -12,12 +13,12 @@ object AuthorToArticleRelationManager {
       * @param authors
       *   The authors to add to the relation.
       */
-    def addAuthorToArticleRelation(
+    def addRelation(
         authors: List[Author],
         article: Article
     ): Unit = {
         authors.foreach(eachAuthor => {
-            val authorToArticlesRelationRedisSetName: String = authorToArticleRelationRedisPrefix + eachAuthor.id;
+            val authorToArticlesRelationRedisSetName: String = redisPrefix + eachAuthor.id;
             RedisDatabaseManagerWriteMode.jedisPipeline
                 .sadd(authorToArticlesRelationRedisSetName, article.id.toString);
         })
