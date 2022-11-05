@@ -69,10 +69,22 @@ object QueryManager {
         referencedByArticleList;
     };
 
-    // TODO
-//    def mostArticles(): List[Author] = {
-////        RedisDatabaseManagerReadMode.jedisInstance.sscan(AuthorToArticleRelationManager.redisPrefix, );
-//    };
+    def mostArticles(): List[Author] = {
+        val authorsWithMostArticlesIDs: util.List[String] = RedisDatabaseManagerReadMode.jedisInstance.zrange(
+          AuthorToArticleRelationManager.AUTHOR_ARTICLE_AMOUNTS_SORTED_SET_KEY,
+          -1,
+          -1
+        );
+
+        val authorList = authorsWithMostArticlesIDs.toArray.map(authorIDString => {
+            val redisJsonString: String = RedisDatabaseManagerReadMode.jedisInstance
+                .get(AuthorManager.redisPrefix + authorIDString);
+
+            redisJsonString.parseJson.convertTo[Author];
+        });
+
+        authorList.toList
+    };
 
     def distinctAuthorsExact(): Long = {
         RedisDatabaseManagerReadMode.jedisInstance.scard(AuthorManager.AUTHORS_IDS_EXACT_SET_KEY);
