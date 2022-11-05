@@ -1,6 +1,6 @@
 package Additional
 
-import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencedArticleToReferencingArticleRelationManager}
+import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencedArticleToReferencingArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
 import DB_Stuff._
 import JsonDefinitions.Article
 import JsonDefinitions.ArticleProtocol.articleFormat
@@ -33,7 +33,9 @@ object Parsing {
         }
 
         parsedArticle.references match {
-            case Some(i) => ReferencedArticleToReferencingArticleRelationManager.addRelation(parsedArticle, i);
+            case Some(i) =>
+                ReferencingArticleToReferencedArticleRelationManager.addRelation(parsedArticle, i)
+                ReferencedArticleToReferencingArticleRelationManager.addRelation(i, parsedArticle);
             case None    =>
         }
     }
