@@ -4,8 +4,8 @@ import JsonDefinitions.Article
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, listFormat}
 import spray.json.enrichAny
 
-object ArticleToArticleRelationManager {
-    final val articleToArticleRelationRedisPrefix = "relation_article_to_article_";
+object ReferencedArticleToReferencingArticleRelationManager {
+    final val referencedArticleToReferencingArticleRelationRedisPrefix = "relation_referenced_article_to_referencing_article_";
 
     /** Add to the DB multiple articles that are being referenced by another article.
       *
@@ -15,7 +15,7 @@ object ArticleToArticleRelationManager {
       *   The articles that are being referenced in form of IDs.
       */
     def addArticleToArticlesRelation(referencingArticle: Article, referencedArticlesIDs: List[Long]): Unit = {
-        val articleToArticleRelationRedisSetName: String = articleToArticleRelationRedisPrefix + referencingArticle.id;
+        val articleToArticleRelationRedisSetName: String = referencedArticleToReferencingArticleRelationRedisPrefix + referencingArticle.id;
 
         val referencedArticleIDsListJsonString = referencedArticlesIDs.toJson.compactPrint;
 

@@ -32,7 +32,7 @@ object Parsing {
         }
 
         parsedArticle.references match {
-            case Some(i) => ArticleToArticleRelationManager.addArticleToArticlesRelation(parsedArticle, i);
+            case Some(i) => ReferencedArticleToReferencingArticleRelationManager.addArticleToArticlesRelation(parsedArticle, i);
             case None    =>
         }
     }
