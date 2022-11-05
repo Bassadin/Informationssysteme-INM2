@@ -11,6 +11,9 @@ object RedisDatabaseManagerReadMode {
     private val jedisConnectionPool: JedisPool = new JedisPool(jedisPoolConfig, DB_HOST, DB_PORT, JEDIS_TIMEOUT);
     val jedisInstance: Jedis = jedisConnectionPool.getResource;
 
+    /*
+    Closes the connection to Jedis
+     */
     def closeConnection(): Unit = {
         jedisConnectionPool.close();
     }
