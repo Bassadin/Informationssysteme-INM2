@@ -7,6 +7,7 @@ object A02_QueryTestMain {
 
         println(QueryManager.titleByID(1091));
         println(QueryManager.authors(1091));
+        println(QueryManager.articles(2312688602L));
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");
