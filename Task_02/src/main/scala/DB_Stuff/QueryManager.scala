@@ -9,7 +9,6 @@ import spray.json._
 import java.util
 
 object QueryManager {
-    // TODO
     def titleByID(articleID: Long): String = {
         val articleJson: String =
             RedisDatabaseManagerReadMode.jedisInstance.get(ArticleManager.redisPrefix + articleID);
