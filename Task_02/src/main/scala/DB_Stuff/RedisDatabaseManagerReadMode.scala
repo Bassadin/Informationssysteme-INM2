@@ -4,7 +4,7 @@ import redis.clients.jedis.{Jedis, JedisPool, JedisPoolConfig}
 
 object RedisDatabaseManagerReadMode {
     final val DB_HOST = "localhost";
-    final val DB_PORT = 32321;
+    final val DB_PORT = 6379;
     final val JEDIS_TIMEOUT = 60 * 1000;
 
     private val jedisPoolConfig: JedisPoolConfig = new JedisPoolConfig();

@@ -5,8 +5,8 @@ import redis.clients.jedis.{Jedis, JedisPool, JedisPoolConfig, Pipeline}
 
 object RedisDatabaseManagerWriteMode {
     final val DB_HOST = "localhost";
-    final val DB_PORT = 32321;
-    final val JEDIS_TIMEOUT = 20 * 1000;
+    final val DB_PORT = 6379;
+    final val JEDIS_TIMEOUT = 60 * 1000;
 
     final val PIPELINE_SYNC_LINE_FREQUENCY = 200_000;
 
