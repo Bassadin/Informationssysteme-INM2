@@ -4,9 +4,15 @@ import java.time.Duration
 
 object Helpers {
 
-    var lastLineTimestamp: Long = 0L;
+    private var lastLineTimestamp: Long = 0L;
 
-    val millisecondsTimeOnStart: Long = System.currentTimeMillis();
+    var millisecondsTimeOnStart: Long = System.currentTimeMillis();
+
+    setInitialStartTimeMilliseconds();
+
+    def setInitialStartTimeMilliseconds(): Unit = {
+        millisecondsTimeOnStart = System.currentTimeMillis();
+    }
 
     /** Prints a status message with the elapsed time.
       * @param indexNumber
