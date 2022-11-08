@@ -6,7 +6,7 @@ import scala.io.Source
 
 object A02_ParseJsonMain {
     val JSON_PATH = "./src/data/dblp.v12.json";
-    val LOGGING_FREQUENCY_LINES = 50_000;
+    val LOGGING_FREQUENCY_LINES = 20_000;
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
