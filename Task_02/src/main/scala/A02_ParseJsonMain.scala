@@ -34,7 +34,6 @@ object A02_ParseJsonMain {
                 }
                 // Sync the pipeline every x lines to save on client RAM
                 if (eachIndex % RedisDatabaseManagerWriteMode.PIPELINE_SYNC_LINE_FREQUENCY == 0) {
-                    println("Syncing pipeline...")
                     RedisDatabaseManagerWriteMode.jedisPipeline.sync();
                 }
             }
