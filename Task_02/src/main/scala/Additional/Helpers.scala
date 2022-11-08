@@ -1,6 +1,7 @@
 package Additional
 
 import java.time.Duration
+import scala.math.BigDecimal.double2bigDecimal
 
 object Helpers {
 
@@ -27,7 +28,8 @@ object Helpers {
             if (lastLineTimestamp == 0) "0"
             else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
 
-        val completionPercentage = indexNumber / REFERENCE_FILE_LINES_AMOUNT;
+        // https://stackoverflow.com/a/11107005
+        val completionPercentage: Double = (indexNumber.toDouble / REFERENCE_FILE_LINES_AMOUNT).setScale(3, BigDecimal.RoundingMode.HALF_UP).toDouble;
 
         println(
           s"| - Parsed line $indexNumberPrintString ($completionPercentage%) - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
