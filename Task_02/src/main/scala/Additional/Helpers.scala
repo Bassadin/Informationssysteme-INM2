@@ -29,7 +29,7 @@ object Helpers {
             else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
 
         // https://stackoverflow.com/a/11107005
-        val completionPercentage: Double = (indexNumber.toDouble / REFERENCE_FILE_LINES_AMOUNT / 100).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble;
+        val completionPercentage: Double = (indexNumber.toDouble / REFERENCE_FILE_LINES_AMOUNT * 100).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble;
 
         println(
           s"| - Parsed line $indexNumberPrintString ($completionPercentage%) - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
