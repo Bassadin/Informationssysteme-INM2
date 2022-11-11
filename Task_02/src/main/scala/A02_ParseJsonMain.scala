@@ -30,7 +30,7 @@ object A02_ParseJsonMain {
                     Helpers.printElapsedTimeStatusMessage(eachIndex);
 
                     val elapsedMilliseconds = System.currentTimeMillis() - millisecondsTimeOnStart;
-                    CSVLogger.writeTimeLoggingRow(elapsedMilliseconds, eachIndex);
+//                    CSVLogger.writeTimeLoggingRow(elapsedMilliseconds, eachIndex);
                 }
                 // Sync the pipeline every x lines to save on client RAM
                 if (eachIndex % RedisDatabaseManagerWriteMode.PIPELINE_SYNC_LINE_FREQUENCY == 0) {
