@@ -5,12 +5,7 @@ import JsonDefinitions.Author
 import JsonDefinitions.AuthorProtocol.authorFormat
 import spray.json.enrichAny
 
-object AuthorManager extends RedisManagerTrait {
-    val redisPrefix = "author_"
-
-    val AUTHORS_IDS_EXACT_SET_KEY = redisPrefix + "ids_exact_set";
-    val AUTHORS_IDS_PF_SET_KEY = redisPrefix + "ids_pf_set";
-
+object AuthorManager {
     /** Add multiple authors to the DB
       *
       * @param authorsToAdd

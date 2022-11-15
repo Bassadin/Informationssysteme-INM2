@@ -1,13 +1,10 @@
 package DB_Stuff.RedisInsertionHandlers
 
-import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.Article
 import JsonDefinitions.ArticleProtocol.articleFormat
 import spray.json.enrichAny
 
-object ArticleManager extends RedisManagerTrait {
-    final val redisPrefix = "arti_";
-
+object ArticleManager {
     /** Add a single article to the DB
       *
       * @param articleToAdd

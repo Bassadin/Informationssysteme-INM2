@@ -5,7 +5,7 @@ import JsonDefinitions.Article
 import JsonDefinitions.AuthorProtocol.{LongJsonFormat, listFormat}
 import spray.json.enrichAny
 
-object ReferencingArticleToReferencedArticleRelationManager extends RedisManagerTrait {
+object ReferencingArticleToReferencedArticleRelationManager {
     final val redisPrefix = "r_referencing_arti-referenced_arti_";
 
     /** Add to the DB multiple referenced articles that are being referenced by another article.

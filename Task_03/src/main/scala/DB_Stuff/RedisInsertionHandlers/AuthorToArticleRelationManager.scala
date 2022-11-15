@@ -3,7 +3,7 @@ package DB_Stuff.RedisInsertionHandlers
 import DB_Stuff.RedisDatabaseManagerWriteMode
 import JsonDefinitions.{Article, Author}
 
-object AuthorToArticleRelationManager extends RedisManagerTrait {
+object AuthorToArticleRelationManager {
     final val redisPrefix = "r_auth-article_";
 
     final val AUTHOR_ARTICLE_AMOUNTS_SORTED_SET_KEY = redisPrefix + "amounts";
