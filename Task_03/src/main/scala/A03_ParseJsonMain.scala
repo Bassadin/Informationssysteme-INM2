@@ -5,12 +5,12 @@ import DB_Stuff.RedisDatabaseManagerWriteMode
 import scala.io.Source
 
 object A03_ParseJsonMain {
-    val JSON_PATH = "./src/data/dblp.v12.json";
+    val JSON_PATH: String = "./src/data/dblp.v12.json";
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
 
-        println("Starting...");
+        println("Starting Task_03...");
 
         val jsonFileSource = Source.fromFile(JSON_PATH);
         val jsonFileLinesIterator = jsonFileSource.getLines;
