@@ -1,5 +1,5 @@
-import Additional.Helpers.{LOGGING_FREQUENCY_LINES, getTimeDifferenceStringBetween, millisecondsTimeOnStart}
-import Additional.{Helpers, Parsing}
+import Additional.LoggingHelper.{LOGGING_FREQUENCY_LINES, getTimeDifferenceStringBetween, millisecondsTimeOnStart}
+import Additional.{LoggingHelper, Parsing}
 import DB_Stuff.RedisDatabaseManagerWriteMode
 
 import scala.io.Source
@@ -9,6 +9,8 @@ object A03_ParseJsonMain {
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
+
+        LoggingHelper.setInitialStartTimeMilliseconds();
 
         println("Starting Task_03...");
 
@@ -26,18 +28,13 @@ object A03_ParseJsonMain {
 
             if (eachIndex > 0) {
                 if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
-                    Helpers.printElapsedTimeStatusMessage(eachIndex);
-                }
-                // Sync the pipeline every x lines to save on client RAM
-                if (eachIndex % RedisDatabaseManagerWriteMode.PIPELINE_SYNC_LINE_FREQUENCY == 0) {
-                    RedisDatabaseManagerWriteMode.jedisPipeline.sync();
+                    LoggingHelper.printElapsedTimeStatusMessage(eachIndex);
                 }
             }
         };
         println("Finished parsing JSON file.");
 
         jsonFileSource.close();
-        RedisDatabaseManagerWriteMode.syncPipelineAndCloseConnection();
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");

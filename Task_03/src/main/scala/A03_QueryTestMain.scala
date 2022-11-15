@@ -1,5 +1,5 @@
-import Additional.Helpers
-import Additional.Helpers.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
+import Additional.LoggingHelper
+import Additional.LoggingHelper.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 import DB_Stuff.{QueryManager, RedisDatabaseManagerReadMode}
 import JsonDefinitions.Author
 
@@ -7,7 +7,7 @@ object A03_QueryTestMain {
     def main(args: Array[String]): Unit = {
         println("Starting...");
 
-        Helpers.setInitialStartTimeMilliseconds();
+        LoggingHelper.setInitialStartTimeMilliseconds();
 
         println("Amount of distinct authors:");
         println(QueryManager.distinctAuthors());

@@ -3,7 +3,7 @@ package Additional
 import java.time.Duration
 import scala.math.BigDecimal.double2bigDecimal
 
-object Helpers {
+object LoggingHelper {
 
     private final val REFERENCE_FILE_LINES_AMOUNT = 4_900_000;
 
