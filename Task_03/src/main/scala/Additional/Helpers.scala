@@ -7,6 +7,8 @@ object Helpers {
 
     private final val REFERENCE_FILE_LINES_AMOUNT = 4_900_000;
 
+    public final val LOGGING_FREQUENCY_LINES = 20_000;
+
     private var lastLineTimestamp: Long = 0L;
 
     var millisecondsTimeOnStart: Long = System.currentTimeMillis();
