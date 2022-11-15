@@ -4,7 +4,7 @@ import DB_Stuff.RedisDatabaseManagerWriteMode
 
 import scala.io.Source
 
-object A02_ParseJsonMain {
+object A03_ParseJsonMain {
     val JSON_PATH = "./src/data/dblp.v12.json";
     val LOGGING_FREQUENCY_LINES = 20_000;
 
