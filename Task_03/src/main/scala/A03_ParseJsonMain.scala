@@ -1,40 +1,29 @@
-import Additional.LoggingHelper.{LOGGING_FREQUENCY_LINES, getTimeDifferenceStringBetween, millisecondsTimeOnStart}
-import Additional.{LoggingHelper, Parsing}
-import DB_Stuff.RedisDatabaseManagerWriteMode
-
-import scala.io.Source
+import Additional.LoggingHelper
+import Additional.LoggingHelper.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
+import DataClasses.Article
+import org.apache.spark.sql.{Encoders, SparkSession}
 
 object A03_ParseJsonMain {
-    val JSON_PATH: String = "./src/data/dblp.v12.json";
+    final val JSON_PATH: String = "./src/data/dblp.v12.json";
+    final val SPARK_MASTER_URL = "spark://localhost:7077"
 
     def main(args: Array[String]): Unit = {
         // Measure time before starting as reference timeframe
+
+        println(System.getProperty("java.version"));
 
         LoggingHelper.setInitialStartTimeMilliseconds();
 
         println("Starting Task_03...");
 
-        val jsonFileSource = Source.fromFile(JSON_PATH);
-        val jsonFileLinesIterator = jsonFileSource.getLines;
+        // configure spark// configure spark
+        val spark = SparkSession.builder.appName("Read JSON Articles File to DataSet").master(SPARK_MASTER_URL).getOrCreate();
 
-        println(s"--- Starting to parse json file '$JSON_PATH' ---");
+        // Java Bean (data class) used to apply schema to JSON data
+        val articleEncoder = Encoders.bean(classOf[Article]);
 
-        // Skip first line, it only contains a [
-        jsonFileLinesIterator.next();
-
-        // Use zipWithIndex to get an index iterator alongside the elements
-        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, eachIndex) =>
-            Parsing.handleLineString(eachLineString);
-
-            if (eachIndex > 0) {
-                if (eachIndex % LOGGING_FREQUENCY_LINES == 0) {
-                    LoggingHelper.printElapsedTimeStatusMessage(eachIndex);
-                }
-            }
-        };
-        println("Finished parsing JSON file.");
-
-        jsonFileSource.close();
+        // read JSON file to Dataset
+        val ds = spark.read.json(JSON_PATH).as(articleEncoder);
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");

@@ -1,4 +1,4 @@
-package JsonDefinitions
+package DataClasses
 
 case class Article(
     id: Long,

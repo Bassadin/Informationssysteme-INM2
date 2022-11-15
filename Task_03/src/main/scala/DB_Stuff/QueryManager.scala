@@ -1,6 +1,6 @@
 package DB_Stuff
 
-import JsonDefinitions.Author
+import DataClasses.Author
 
 /*
 Handles querying methods

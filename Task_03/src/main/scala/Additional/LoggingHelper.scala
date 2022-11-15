@@ -5,9 +5,9 @@ import scala.math.BigDecimal.double2bigDecimal
 
 object LoggingHelper {
 
-    private final val REFERENCE_FILE_LINES_AMOUNT = 4_900_000;
+    private final val REFERENCE_FILE_LINES_AMOUNT = 4900000;
 
-    final val LOGGING_FREQUENCY_LINES = 20_000;
+    final val LOGGING_FREQUENCY_LINES = 20000;
 
     private var lastLineTimestamp: Long = 0L;
 

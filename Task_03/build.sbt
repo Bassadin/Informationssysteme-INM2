@@ -13,6 +13,5 @@ libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 // https://mvnrepository.com/artifact/org.apache.spark/spark-core
 libraryDependencies += "org.apache.spark" %% "spark-core" % "3.3.1"
 
-
 // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.3.1"

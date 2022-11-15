@@ -1,7 +1,7 @@
 import Additional.LoggingHelper
 import Additional.LoggingHelper.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
-import DB_Stuff.{QueryManager, RedisDatabaseManagerReadMode}
-import JsonDefinitions.Author
+import DB_Stuff.{QueryManager}
+import DataClasses.Author
 
 object A03_QueryTestMain {
     def main(args: Array[String]): Unit = {
@@ -18,8 +18,6 @@ object A03_QueryTestMain {
         println("Author with most articles: " + authorWithMostArticles);
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
-
-        RedisDatabaseManagerReadMode.closeConnection();
 
         println("Terminated.");
     }
