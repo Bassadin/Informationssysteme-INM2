@@ -1,7 +1,6 @@
 package Additional
 
 import DB_Stuff.RedisInsertionHandlers.{ArticleManager, ArticleToAuthorRelationManager, AuthorManager, AuthorToArticleRelationManager, ReferencedArticleToReferencingArticleRelationManager, ReferencingArticleToReferencedArticleRelationManager}
-import DB_Stuff._
 import JsonDefinitions.Article
 import JsonDefinitions.ArticleProtocol.articleFormat
 import spray.json._
