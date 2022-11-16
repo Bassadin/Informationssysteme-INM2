@@ -14,7 +14,10 @@ lazy val root = (project in file("."))
 libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
 
 // https://mvnrepository.com/artifact/org.apache.spark/spark-core
-libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion
+libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "provided"
 
 // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
-libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion
+libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
+
+// https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-client
+libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "3.3.2" % "provided"
