@@ -18,6 +18,3 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion % "prov
 
 // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
 libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion % "provided"
-
-// https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-client
-libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "3.3.2" % "provided"
