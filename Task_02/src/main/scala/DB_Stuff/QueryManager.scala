@@ -89,7 +89,7 @@ object QueryManager {
     };
 
     def distinctAuthorsExact(): Long = {
-        RedisDatabaseManagerReadMode.jedisInstance.scard(AuthorManager.AUTHORS_IDS_EXACT_SET_KEY);
+        RedisDatabaseManagerReadMode.jedisInstance.zcard(AuthorToArticleRelationManager.AUTHOR_ARTICLE_AMOUNTS_SORTED_SET_KEY);
     };
     def distinctAuthorsHyperLogLog(): Long = {
         RedisDatabaseManagerReadMode.jedisInstance.pfcount(AuthorManager.AUTHORS_IDS_PF_SET_KEY);

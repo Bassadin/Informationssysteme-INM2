@@ -8,8 +8,7 @@ import spray.json.enrichAny
 object AuthorManager extends RedisManagerTrait {
     val redisPrefix = "author_"
 
-    val AUTHORS_IDS_EXACT_SET_KEY = redisPrefix + "ids_exact_set";
-    val AUTHORS_IDS_PF_SET_KEY = redisPrefix + "ids_pf_set";
+    val AUTHORS_IDS_PF_SET_KEY: String = redisPrefix + "ids_pf_set";
 
     /** Add multiple authors to the DB
       *
@@ -23,9 +22,6 @@ object AuthorManager extends RedisManagerTrait {
             RedisDatabaseManagerWriteMode.jedisPipeline.set(redisPrefix + eachAuthor.id, authorJsonString);
 
             val authorIdString = eachAuthor.id.toString;
-
-            // Exact size set
-            RedisDatabaseManagerWriteMode.jedisPipeline.sadd(AUTHORS_IDS_EXACT_SET_KEY, authorIdString);
 
             // HyperLogLog
             RedisDatabaseManagerWriteMode.jedisPipeline.pfadd(AUTHORS_IDS_PF_SET_KEY, authorIdString);
