@@ -78,14 +78,14 @@ object QueryManager {
           -1
         );
 
-        val authorList = authorsWithMostArticlesIDs.toArray.map(authorIDString => {
+        val authorArray = authorsWithMostArticlesIDs.toArray.map(authorIDString => {
             val redisJsonString: String = RedisDatabaseManagerReadMode.jedisInstance
                 .get(AuthorManager.redisPrefix + authorIDString);
 
             redisJsonString.parseJson.convertTo[Author];
         });
 
-        authorList.toList
+        authorArray.toList
     };
 
     def distinctAuthorsExact(): Long = {
