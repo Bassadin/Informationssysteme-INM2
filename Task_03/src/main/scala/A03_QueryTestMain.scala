@@ -1,6 +1,6 @@
 import Additional.LoggingHelper
 import Additional.LoggingHelper.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
-import DB_Stuff.{QueryManager}
+import DB_Stuff.QueryManager
 import DataClasses.Author
 
 object A03_QueryTestMain {
