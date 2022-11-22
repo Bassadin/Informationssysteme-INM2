@@ -4,11 +4,6 @@ import java.time.Duration
 import scala.math.BigDecimal.double2bigDecimal
 
 object LoggingHelper {
-
-    private final val REFERENCE_FILE_LINES_AMOUNT = 4900000;
-
-    final val LOGGING_FREQUENCY_LINES = 20000;
-
     private var lastLineTimestamp: Long = 0L;
 
     var millisecondsTimeOnStart: Long = System.currentTimeMillis();
@@ -20,21 +15,15 @@ object LoggingHelper {
     }
 
     /** Prints a status message with the elapsed time.
-      * @param indexNumber
-      *   How many JSON entries have been read.
       */
-    def printElapsedTimeStatusMessage(indexNumber: Int): Unit = {
-        val indexNumberPrintString = String.format("%,d", indexNumber);
+    def printElapsedTimeStatusMessage(): Unit = {
         val elapsedTimeString = getTimeDifferenceStringBetween(millisecondsTimeOnStart);
         val deltaTimeString =
             if (lastLineTimestamp == 0) "0"
             else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
 
-        // https://stackoverflow.com/a/11107005
-        val completionPercentage: Double = (indexNumber.toDouble / REFERENCE_FILE_LINES_AMOUNT * 100).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble;
-
         println(
-          s"| - Parsed line $indexNumberPrintString ($completionPercentage%) - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
+          s"| - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
         );
 
         lastLineTimestamp = System.currentTimeMillis();
