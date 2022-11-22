@@ -25,7 +25,10 @@ object SparkConnectionManager {
     val articleEncoder: Encoder[Article] = Encoders.bean(classOf[Article]);
 
     def readJsonFileIntoDataset(jsonPath: String = JSON_PATH): Dataset[Article] = {
-        val articlesDataset = sparkSession.read.json(jsonPath).as(articleEncoder);
+        val articlesDataset = sparkSession.read
+            .json(jsonPath)
+            .as(articleEncoder);
+        articlesDataset.printSchema();
         LoggingHelper.printElapsedTimeStatusMessage();
 
         return articlesDataset;

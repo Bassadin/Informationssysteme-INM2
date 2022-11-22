@@ -10,13 +10,17 @@ object A03_ParseJsonMain {
         println("Starting Task_03...");
         LoggingHelper.setInitialStartTimeMilliseconds();
 
+        println("Reading JSON file...");
         val articlesDataset: Dataset[Article] = SparkConnectionManager.readJsonFileIntoDataset();
+        articlesDataset.createOrReplaceTempView("ArticlesFromJSON")
+
+        println("Writing parquet file...");
 
         SparkConnectionManager.removeOldParquetDirectory();
         articlesDataset.write.parquet(SparkConnectionManager.PARQUET_SAVE_PATH);
 
-//        val blubb = SparkConnectionManager.sparkSession.sql("select * from ArticlesFromJSON");
-//        blubb.show();
+        val blubb = SparkConnectionManager.sparkSession.sql("select * from ArticlesFromJSON");
+        blubb.show();
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");
