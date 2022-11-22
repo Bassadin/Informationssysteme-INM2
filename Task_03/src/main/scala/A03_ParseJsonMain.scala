@@ -12,6 +12,7 @@ object A03_ParseJsonMain {
 
         val articlesDataset: Dataset[Article] = SparkConnectionManager.readJsonFileIntoDataset();
 
+        SparkConnectionManager.removeOldParquetDirectory();
         articlesDataset.write.parquet(SparkConnectionManager.PARQUET_SAVE_PATH);
 
 //        val blubb = SparkConnectionManager.sparkSession.sql("select * from ArticlesFromJSON");
