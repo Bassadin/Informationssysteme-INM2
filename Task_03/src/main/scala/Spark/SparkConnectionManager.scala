@@ -6,12 +6,14 @@ import org.apache.spark.sql.{Dataset, Encoder, Encoders, SparkSession}
 
 object SparkConnectionManager {
     final val JSON_PATH: String = "./src/data/dblp.v12.json";
+    final val PARQUET_SAVE_PATH = "src/data/articles";
+
     //    final val SPARK_MASTER_URL = "spark://localhost:7077";
     final val SPARK_MASTER_URL = "local[*]";
 
     // configure spark// configure spark
     val sparkSession: SparkSession = SparkSession.builder
-        .appName("Read JSON Articles File to DataSet")
+        .appName("ArticlesFromJSON")
         .master(SPARK_MASTER_URL)
         .config("spark.sql.caseSensitive", "true")
         .getOrCreate();
