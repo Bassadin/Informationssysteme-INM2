@@ -3,7 +3,7 @@ ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / description := "inm2-infsys-task03"
 ThisBuild / name := "Informationssysteme Task 03"
 
-val sparkVersion = "3.2.2"
+val sparkVersion = "3.3.1"
 
 lazy val root = (project in file("."))
     .settings(
