@@ -14,6 +14,8 @@ object SparkConnectionManager {
     //    final val SPARK_MASTER_URL = "spark://localhost:7077";
     final val SPARK_MASTER_URL = "local[*]";
 
+    final val ARTICLE_SCHEMA = Encoders.product[Article].schema;
+
     // configure spark// configure spark
     val sparkSession: SparkSession = SparkSession.builder
         .appName("ArticlesFromJSON")
@@ -26,6 +28,7 @@ object SparkConnectionManager {
 
     def readJsonFileIntoDataset(jsonPath: String = JSON_PATH): Dataset[Article] = {
         val articlesDataset = sparkSession.read
+            .schema(ARTICLE_SCHEMA)
             .json(jsonPath)
             .as(articleEncoder);
         articlesDataset.printSchema();
