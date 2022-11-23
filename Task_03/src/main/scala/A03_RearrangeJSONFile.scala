@@ -31,7 +31,6 @@ object A03_RearrangeJSONFile {
 
                 outputFileWriter.write(rearrangedLineString + "\n");
             }
-
         };
 
         println("Closing file writer...");
