@@ -23,7 +23,7 @@ object LoggingHelper {
             else getTimeDifferenceStringBetween(lastLineTimestamp, System.currentTimeMillis());
 
         println(
-          s"| - Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
+          s"=> Elapsed Time: $elapsedTimeString (+$deltaTimeString)"
         );
 
         lastLineTimestamp = System.currentTimeMillis();
