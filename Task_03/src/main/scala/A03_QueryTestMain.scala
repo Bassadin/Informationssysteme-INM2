@@ -6,38 +6,40 @@ object A03_QueryTestMain {
         println("Starting...");
 
         // Task 1b)
+        println("\n\n--- Article counts ---");
+
         LoggingHelper.setStartTimeMilliseconds();
         println("Amount of articles with JSON:");
         println(QueryManagerArticleCounts.articlesCountJSON());
-        println(s"Elapsed time: ${LoggingHelper.printElapsedTimeStatusMessage()}");
+        LoggingHelper.printElapsedTimeStatusMessage();
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Amount of articles with Parquet:");
         println(QueryManagerArticleCounts.articlesCountParquet());
-        println(s"Elapsed time: ${LoggingHelper.printElapsedTimeStatusMessage()}");
+        LoggingHelper.printElapsedTimeStatusMessage();
 
         // Task 1c)
-        println("--- SQL Version ---");
-
-        LoggingHelper.setStartTimeMilliseconds();
-        println("Amount of distinct authors (SQL):");
-        println(QueryManagerSQL.distinctAuthors());
-        println(s"Elapsed time: ${LoggingHelper.printElapsedTimeStatusMessage()}");
-
-        LoggingHelper.setStartTimeMilliseconds();
-        println("Authors with the most articles (SQL):");
-        println("Author with most articles: " + QueryManagerSQL.mostArticles().head);
-
-        println("--- Functional API Version ---");
+        println("\n\n--- Functional API Version ---");
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Amount of distinct authors (Functional API):");
         println(QueryManagerFunctionalAPI.distinctAuthors());
-        println(s"Elapsed time: ${LoggingHelper.printElapsedTimeStatusMessage()}");
+        LoggingHelper.printElapsedTimeStatusMessage();
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Authors with the most articles (Functional API):");
         println("Author with most articles: " + QueryManagerFunctionalAPI.mostArticles().head);
+
+        println("\n\n--- SQL Version ---");
+
+        LoggingHelper.setStartTimeMilliseconds();
+        println("Amount of distinct authors (SQL):");
+        println(QueryManagerSQL.distinctAuthors());
+        LoggingHelper.printElapsedTimeStatusMessage();
+
+        LoggingHelper.setStartTimeMilliseconds();
+        println("Authors with the most articles (SQL):");
+        println("Author with most articles: " + QueryManagerSQL.mostArticles().head);
 
         println(
           s"Total elapsed time: ${LoggingHelper.getTimeDifferenceStringBetween(LoggingHelper.millisecondsTimeOnStart)}"
