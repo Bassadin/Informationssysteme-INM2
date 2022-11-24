@@ -18,7 +18,6 @@ object A03_QueryTestMain {
         println("Author with most articles: " + authorWithMostArticles);
 
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
-
         println("Terminated.");
     }
 }
