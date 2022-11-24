@@ -1,12 +1,13 @@
-package Spark
+package Spark.Queries
 
 import DataClasses.Author
+import Spark.{ParquetReader, SparkConnectionManager}
 import org.apache.spark.sql.DataFrame
 
 /*
 Handles querying methods
  */
-object QueryManager {
+object QueryManagerSQL {
 
     ParquetReader.createOrReplaceArticlesView();
 
@@ -20,7 +21,5 @@ object QueryManager {
 
     def distinctAuthors(): Long = ???;
 
-    def articlesCountJSON(): Long = ???;
 
-    def articlesCountParquet(): Long = ???;
 }
