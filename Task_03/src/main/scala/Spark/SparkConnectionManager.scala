@@ -23,6 +23,8 @@ object SparkConnectionManager {
         .config("spark.sql.caseSensitive", "true")
         .getOrCreate();
 
+    sparkSession.sparkContext.setLogLevel("ERROR");
+
     // Java Bean (data class) used to apply schema to JSON data
     val articleEncoder: Encoder[Article] = Encoders.bean(classOf[Article]);
 
