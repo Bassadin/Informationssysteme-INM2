@@ -16,3 +16,7 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % sparkVersion
 // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
 libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion
 
+// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % "2.19.0"
+
+
