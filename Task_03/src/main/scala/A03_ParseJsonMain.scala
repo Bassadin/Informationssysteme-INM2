@@ -8,7 +8,7 @@ object A03_ParseJsonMain {
 
     def main(args: Array[String]): Unit = {
         println("Starting Task_03...");
-        LoggingHelper.setInitialStartTimeMilliseconds();
+        LoggingHelper.setStartTimeMilliseconds();
 
         println("Reading JSON file...");
         val articlesDataset: Dataset[Article] = SparkConnectionManager.readJsonFileIntoDataset();

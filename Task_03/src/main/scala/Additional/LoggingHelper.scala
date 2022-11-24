@@ -8,9 +8,9 @@ object LoggingHelper {
 
     var millisecondsTimeOnStart: Long = System.currentTimeMillis();
 
-    setInitialStartTimeMilliseconds();
+    setStartTimeMilliseconds();
 
-    def setInitialStartTimeMilliseconds(): Unit = {
+    def setStartTimeMilliseconds(): Unit = {
         millisecondsTimeOnStart = System.currentTimeMillis();
     }
 
