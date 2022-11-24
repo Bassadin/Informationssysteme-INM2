@@ -1,9 +1,12 @@
 import Additional.LoggingHelper
+import Spark.ParquetReader
 import Spark.Queries.{QueryManagerArticleCounts, QueryManagerFunctionalAPI, QueryManagerSQL}
 
 object A03_QueryTestMain {
     def main(args: Array[String]): Unit = {
         println("Starting...");
+
+        ParquetReader.createOrReplaceArticlesView();
 
         // Task 1b)
         println("\n\n--- Article counts ---");
