@@ -18,18 +18,6 @@ object A03_ParseJsonMain {
         SparkConnectionManager.removeOldParquetDirectory();
         articlesDataset.write.parquet(SparkConnectionManager.PARQUET_SAVE_PATH);
 
-        println("Loading parquet file...");
-        val parquetFileDF = SparkConnectionManager.sparkSession.read
-            .schema(SparkConnectionManager.ARTICLE_SCHEMA)
-            .parquet(SparkConnectionManager.PARQUET_SAVE_PATH);
-        println("Creating view with parquet file data...");
-        parquetFileDF.createOrReplaceTempView("ArticlesFromJSON");
-
-        println("Creating SQL query...");
-        val sqlString = "SELECT * FROM ArticlesFromJSON WHERE title LIKE 'Preliminary Desig%'";
-        val sqlQuery = SparkConnectionManager.sparkSession.sql(sqlString);
-        sqlQuery.show();
-
         println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
         println("Terminated.");
     }
