@@ -1,6 +1,7 @@
 package Spark
 
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions.{col, explode}
 
 object ParquetReader {
     println("Loading parquet file...");
