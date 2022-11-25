@@ -1,10 +1,9 @@
 import Additional.LoggingHelper
-import Additional.LoggingHelper.{getTimeDifferenceStringBetween, millisecondsTimeOnStart}
 import DataClasses.Article
 import Spark.SparkConnectionManager
 import org.apache.spark.sql.Dataset
 
-object A03_ParseJsonMain {
+object A03_ParseJsonAndWriteParquetMain {
 
     def main(args: Array[String]): Unit = {
         println("Starting Task_03...");
@@ -18,7 +17,7 @@ object A03_ParseJsonMain {
         SparkConnectionManager.removeOldParquetDirectory();
         articlesDataset.write.parquet(SparkConnectionManager.PARQUET_SAVE_PATH);
 
-        println(s"Total elapsed time: ${getTimeDifferenceStringBetween(millisecondsTimeOnStart)}");
+        LoggingHelper.printElapsedTimeStatusMessage();
         println("Terminated.");
     }
 }
