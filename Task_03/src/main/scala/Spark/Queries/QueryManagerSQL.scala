@@ -17,12 +17,16 @@ object QueryManagerSQL {
             .select(explode(col("authors")))
             .select("col.id");
 
-        authorsDataFrame.createOrReplaceTempView("distinctAuthors");
+        authorsDataFrame.createOrReplaceTempView("authors");
 
-        val sqlString: String = "SELECT COUNT(id) as distinctAuthorsCount from distinctAuthors";
-        val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
+        val sqlResultDataFrame = SparkConnectionManager.sparkSession
+            .sql("SELECT DISTINCT COUNT(id) as distinctAuthorsCount from authors");
 
-        val amountOfDistinctAuthors = sqlResultDataFrame.select("distinctAuthorsCount").collect().head.getLong(0);
+        val amountOfDistinctAuthors = sqlResultDataFrame
+            .select("distinctAuthorsCount")
+            .collect()
+            .head
+            .getLong(0);
 
         return amountOfDistinctAuthors;
     };
