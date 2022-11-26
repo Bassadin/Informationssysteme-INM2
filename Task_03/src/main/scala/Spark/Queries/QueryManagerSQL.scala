@@ -2,8 +2,8 @@ package Spark.Queries
 
 import DataClasses.Author
 import Spark.{ParquetReader, SparkConnectionManager}
-import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, explode}
+import org.apache.spark.sql.{DataFrame, Row}
 
 /*
 Handles querying methods
@@ -45,27 +45,31 @@ object QueryManagerSQL {
                 authors.*,
                 COUNT(authors.id) AS value_occurrence
               FROM authors
-              GROUP BY authors.id, authors.name, authors.org
+              GROUP BY authors.id
               ORDER BY value_occurrence DESC
               LIMIT 1;
               """;
 
         val sqlString2 =
             """
-                SELECT
-                    *,
-                    COUNT(authors.id) AS article_count
-                FROM authors
-                WHERE article_count = (SELECT MAX(COUNT(authors.id)) FROM authors)
-                ORDER BY authors.id ASC
+                SELECT * FROM my_table GROUP BY value ORDER BY  count(*) DESC
             """;
+
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
 
-        val resultData = sqlResultDataFrame.select("authors.id", "authors.name", "authors.org");
-        val authorsList = resultData.as[Author](SparkConnectionManager.authorEncoder).collect();
+        val authorsList: List[Author] = sqlResultDataFrame
+            .collect()
+            .map((eachRow: Row) => {
+                Author(
+                  eachRow.getAs[Long]("id"),
+                  eachRow.getAs[String]("name"),
+                  eachRow.getAs[String]("org")
+                );
+            })
+            .toList;
 
         // TODO
-        return authorsList.toList;
+        return authorsList;
     };
 
 }
