@@ -32,6 +32,28 @@ object QueryManagerSQL {
     };
 
     def mostArticles(): List[Author] = {
+        val authorsDataFrame: DataFrame = ParquetReader.parquetFileDataFrame
+            .select(explode(col("authors")))
+            .select("col.*");
+        authorsDataFrame.createOrReplaceTempView("authors");
+
+        // https://stackoverflow.com/a/12235631/3526350
+        val sqlString =
+            """
+              SELECT
+                authors.id,
+                COUNT(authors.id) AS `value_occurrence`
+              FROM
+                authors
+              GROUP BY 
+                authors.id
+              ORDER BY 
+                `value_occurrence` DESC
+              LIMIT 1;
+              """;
+        val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
+
+        val resultData = sqlResultDataFrame.collect();
 
         // TODO
         return List.empty;
