@@ -1,5 +1,6 @@
 package Spark.Queries
 
+import Additional.RowConversion
 import DataClasses.Author
 import Spark.{ParquetReader, SparkConnectionManager}
 import org.apache.spark.sql.functions.{col, explode}
@@ -37,35 +38,27 @@ object QueryManagerSQL {
             .select("col.*");
         authorsDataFrame.createOrReplaceTempView("authors");
 
-        // TODO
-        // https://stackoverflow.com/a/12235631/3526350
+        // https://stackoverflow.com/a/39816161/3526350
         val sqlString =
             """
-              SELECT
-                authors.*,
-                COUNT(authors.id) AS value_occurrence
-              FROM authors
-              GROUP BY authors.id
-              ORDER BY value_occurrence DESC
-              LIMIT 1;
-              """;
-
-        val sqlString2 =
-            """
-                SELECT * FROM my_table GROUP BY value ORDER BY  count(*) DESC
+                SELECT
+                    a1.*
+              FROM authors a1
+              RIGHT JOIN
+                (
+                    SELECT max(id) as id, COUNT(id) AS article_count
+                    FROM authors
+                    GROUP BY id
+                    ORDER BY article_count DESC
+                    LIMIT 1
+                ) a2 ON a1.id = a2.id
             """;
 
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
 
         val authorsList: List[Author] = sqlResultDataFrame
             .collect()
-            .map((eachRow: Row) => {
-                Author(
-                  eachRow.getAs[Long]("id"),
-                  eachRow.getAs[String]("name"),
-                  eachRow.getAs[String]("org")
-                );
-            })
+            .map(RowConversion.rowToAuthor)
             .toList;
 
         // TODO
