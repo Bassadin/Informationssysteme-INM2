@@ -13,8 +13,10 @@ object QueryManagerFunctionalAPI {
     ParquetReader.createOrReplaceArticlesView();
 
     def distinctAuthors(): Long = {
-        val authors: DataFrame = ParquetReader.parquetFileDataFrame.select(explode(col("authors"))).select("col.id");
-        val distinctAuthorsAmount: Long = authors.distinct().count();
+        val authorsDataFrame: DataFrame = ParquetReader.parquetFileDataFrame
+            .select(explode(col("authors")))
+            .select("col.id");
+        val distinctAuthorsAmount: Long = authorsDataFrame.distinct().count();
 
         return distinctAuthorsAmount;
     };
