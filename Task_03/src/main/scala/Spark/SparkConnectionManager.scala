@@ -27,7 +27,7 @@ object SparkConnectionManager {
 
     // Java Bean (data class) used to apply schema to JSON data
     val articleEncoder: Encoder[Article] = Encoders.bean(classOf[Article]);
-    val authorEncoder: Encoder[Author] = Encoders.bean(classOf[Author]);
+//    val authorEncoder: Encoder[Author] = Encoders.bean(classOf[Author]);
 
     def readJsonFileIntoDataset(jsonPath: String = JSON_PATH): Dataset[Article] = {
         val articlesDataset = sparkSession.read
