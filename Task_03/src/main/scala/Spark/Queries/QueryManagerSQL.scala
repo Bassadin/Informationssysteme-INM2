@@ -37,26 +37,35 @@ object QueryManagerSQL {
             .select("col.*");
         authorsDataFrame.createOrReplaceTempView("authors");
 
+        // TODO
         // https://stackoverflow.com/a/12235631/3526350
         val sqlString =
             """
               SELECT
-                authors.id,
-                COUNT(authors.id) AS `value_occurrence`
-              FROM
-                authors
-              GROUP BY 
-                authors.id
-              ORDER BY 
-                `value_occurrence` DESC
+                authors.*,
+                COUNT(authors.id) AS value_occurrence
+              FROM authors
+              GROUP BY authors.id, authors.name, authors.org
+              ORDER BY value_occurrence DESC
               LIMIT 1;
               """;
+
+        val sqlString2 =
+            """
+                SELECT
+                    *,
+                    COUNT(authors.id) AS article_count
+                FROM authors
+                WHERE article_count = (SELECT MAX(COUNT(authors.id)) FROM authors)
+                ORDER BY authors.id ASC
+            """;
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
 
-        val resultData = sqlResultDataFrame.collect();
+        val resultData = sqlResultDataFrame.select("authors.id", "authors.name", "authors.org");
+        val authorsList = resultData.as[Author](SparkConnectionManager.authorEncoder).collect();
 
         // TODO
-        return List.empty;
+        return authorsList.toList;
     };
 
 }
