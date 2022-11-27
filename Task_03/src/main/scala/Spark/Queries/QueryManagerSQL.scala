@@ -38,20 +38,20 @@ object QueryManagerSQL {
             .select("col.*");
         authorsDataFrame.createOrReplaceTempView("authors");
 
-        // https://stackoverflow.com/a/39816161/3526350
+        // https://sql-bits.com/how-to-find-the-mode-in-sql/
         val sqlString =
             """
-                SELECT
-                    a1.*
-              FROM authors a1
-              RIGHT JOIN
-                (
-                    SELECT max(id) as id, COUNT(id) AS article_count
-                    FROM authors
-                    GROUP BY id
-                    ORDER BY article_count DESC
-                    LIMIT 1
-                ) a2 ON a1.id = a2.id
+                SELECT *
+                FROM authors a1
+                JOIN (
+                    SELECT
+                            authors.id,
+                            RANK() OVER (ORDER BY COUNT(*) DESC) AS article_count_rank
+                        FROM authors
+                        GROUP BY authors.id
+                ) a2
+                ON a1.id = a2.id
+                WHERE article_count_rank = 1;
             """;
 
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
@@ -61,7 +61,6 @@ object QueryManagerSQL {
             .map(RowConversion.rowToAuthor)
             .toList;
 
-        // TODO
         return authorsList;
     };
 
