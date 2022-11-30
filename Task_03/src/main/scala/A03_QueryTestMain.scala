@@ -15,11 +15,13 @@ object A03_QueryTestMain {
         println("Amount of articles with JSON:");
         println(QueryManagerArticleCounts.articlesCountJSON());
         LoggingHelper.printElapsedTimeStatusMessage();
+        println();
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Amount of articles with Parquet:");
         println(QueryManagerArticleCounts.articlesCountParquet());
         LoggingHelper.printElapsedTimeStatusMessage();
+        println();
 
         // Task 1c)
         println("\n\n--- Functional API Version ---");
@@ -28,10 +30,12 @@ object A03_QueryTestMain {
         println("Amount of distinct authors (Functional API):");
         println(QueryManagerFunctionalAPI.distinctAuthors());
         LoggingHelper.printElapsedTimeStatusMessage();
+        println();
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Authors with the most articles (Functional API):");
         println("Author with most articles: " + QueryManagerFunctionalAPI.mostArticles().head);
+        println();
 
         println("\n\n--- SQL Version ---");
 
