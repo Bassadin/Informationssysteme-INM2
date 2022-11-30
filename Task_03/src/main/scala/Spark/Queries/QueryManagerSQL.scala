@@ -18,10 +18,10 @@ object QueryManagerSQL {
             .select(explode(col("authors")))
             .select("col.id");
 
-        authorsDataFrame.createOrReplaceTempView("authors");
+        authorsDataFrame.createOrReplaceTempView("authors_for_distinct");
 
         val sqlResultDataFrame = SparkConnectionManager.sparkSession
-            .sql("SELECT DISTINCT COUNT(id) as distinctAuthorsCount from authors");
+            .sql("SELECT COUNT(DISTINCT id) as distinctAuthorsCount from authors_for_distinct");
 
         val amountOfDistinctAuthors = sqlResultDataFrame
             .select("distinctAuthorsCount")
@@ -36,19 +36,19 @@ object QueryManagerSQL {
         val authorsDataFrame: DataFrame = ParquetReader.parquetFileDataFrame
             .select(explode(col("authors")))
             .select("col.*");
-        authorsDataFrame.createOrReplaceTempView("authors");
+        authorsDataFrame.createOrReplaceTempView("authors_for_most_articles");
 
         // https://sql-bits.com/how-to-find-the-mode-in-sql/
         val sqlString =
             """
                 SELECT *
-                FROM authors a1
+                FROM authors_for_most_articles a1
                 JOIN (
                     SELECT
-                            authors.id,
+                            authors_for_most_articles.id,
                             RANK() OVER (ORDER BY COUNT(*) DESC) AS article_count_rank
-                        FROM authors
-                        GROUP BY authors.id
+                        FROM authors_for_most_articles
+                        GROUP BY authors_for_most_articles.id
                 ) a2
                 ON a1.id = a2.id
                 WHERE article_count_rank = 1;
