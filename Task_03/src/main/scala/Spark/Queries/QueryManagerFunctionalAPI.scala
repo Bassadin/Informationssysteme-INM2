@@ -30,16 +30,14 @@ object QueryManagerFunctionalAPI {
         authorsDataFrame.createOrReplaceTempView("authors");
 
         val rankDataFrame = authorsDataFrame
+            .groupBy(col("id"))
+            .agg(count("id").alias("count"))
             .select(
               col("id"),
               rank()
-                  .over(Window.orderBy(count("*").desc))
+                  .over(Window.orderBy(col("count").desc))
                   .as("article_count_rank")
-            )
-            .groupBy(col("id"))
-            .max();
-
-        rankDataFrame.show();
+            );
 
         val sqlResultDataFrame = authorsDataFrame
             .select("*")
