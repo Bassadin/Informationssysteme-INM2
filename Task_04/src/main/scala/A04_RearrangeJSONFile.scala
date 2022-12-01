@@ -14,18 +14,25 @@ object A04_RearrangeJSONFile {
         val jsonFileSource = Source.fromFile(INPUT_PATH);
         val jsonFileLinesIterator = jsonFileSource.getLines;
 
+        jsonFileLinesIterator.next();
+
         // Use zipWithIndex to get an index iterator alongside the elements
-        jsonFileLinesIterator.foreach { case (eachLineString) =>
-            // Skip last line
-            val cleanedLineString = eachLineString
-                .replace("\uFFFF", "?")
-                .replaceFirst("^,", "");
+        jsonFileLinesIterator.zipWithIndex.foreach { case (eachLineString, eachIndex) =>
+            if (!eachLineString.equals("]")) {
+                // Skip last line
+                val cleanedLineString = eachLineString
+                    .replace("\uFFFF", "?")
+                    .replaceFirst("^,", "");
 
-            val replacementRegex: Regex = """(?:"fos":\[.*?],|"indexed_abstract":\{.+?},|"venue":\{.*?},)""".r;
+                val replacementRegex: Regex = """(?:"fos":\[.*?],|"indexed_abstract":\{.+?},|"venue":\{.*?},)""".r;
+                val rearrangedLineString = replacementRegex.replaceAllIn(cleanedLineString, "");
 
-            val rearrangedLineString = replacementRegex.replaceAllIn(cleanedLineString, "");
+                outputFileWriter.write(rearrangedLineString + "\n");
 
-            outputFileWriter.write(rearrangedLineString + "\n");
+                if (eachIndex % 250_000 == 0) {
+                    println(s"Parsed line $eachIndex");
+                }
+            }
 
         };
 
