@@ -1,6 +1,6 @@
 # Task 04 Informationssysteme (Piepmeyer) - Redis
 
-Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
+Link to repository: <https://github.com/Bassadin/Informationssysteme-INM2>
 
 ## Subtaks
 
@@ -102,6 +102,8 @@ Created an index for authors.id
 
 ### Task 4f) and g) - Maximum amount of articles for an author and who is that author
 
+Solution 1 (Winner of my heart):
+
 ```mongodb
 [
   {
@@ -137,6 +139,40 @@ Created an index for authors.id
     $match: {
       articles_amount_rank: 1,
     },
+  },
+]
+```
+
+Solution 2 (Probably more performant...):
+
+```mongodb
+[
+  {
+    $unwind: {
+      path: "$authors",
+    },
+  },
+  {
+    $group: {
+      _id: "$authors.id",
+      articles_count: {
+        $count: {},
+      },
+      name: {
+        $first: "$authors.name",
+      },
+      org: {
+        $first: "$authors.org",
+      },
+    },
+  },
+  {
+    $sort: {
+      articles_count: -1,
+    },
+  },
+  {
+    $limit: 1,
   },
 ]
 ```
