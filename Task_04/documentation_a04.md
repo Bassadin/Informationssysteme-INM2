@@ -4,7 +4,7 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 
 ## Subtaks
 
-### Task 4a)
+### Task 4a) - Title of Article by ID
 
 ```mongodb
 [
@@ -21,7 +21,7 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 ]
 ```
 
-### Task 4b)
+### Task 4b) - Authors of Article by ID
 
 ```mongodb
 [
@@ -38,7 +38,7 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 ]
 ```
 
-### Task 4c)
+### Task 4c) - Articles of Author by ID
 
 ```mongodb
 [
@@ -50,7 +50,7 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 ]
 ```
 
-### Task 4d)
+### Task 4d) - Articles referenced by Article with ID
 
 ```mongodb
 [
@@ -76,7 +76,7 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 
 ```
 
-### Task 4e)
+### Task 4e) - Amount of different Authors
 
 ```mongodb
 [
@@ -96,13 +96,13 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 ]
 ```
 
-### Task 4f)
+### Task 4f) - Maximum amount of articles for an author
 
 ```mongodb
 
 ```
 
-### Task 4g)
+### Task 4g) - Who has the most articles?
 
 ```mongodb
 
