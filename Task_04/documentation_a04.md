@@ -53,13 +53,47 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 ### Task 4d)
 
 ```mongodb
+[
+  {
+    $match: {
+      id: 1535888970,
+    },
+  },
+  {
+    $lookup: {
+      from: "articles",
+      localField: "references",
+      foreignField: "id",
+      as: "articleReferences",
+    },
+  },
+  {
+    $project: {
+      "articleReferences.title": 1,
+    },
+  },
+]
 
 ```
 
 ### Task 4e)
 
 ```mongodb
-
+[
+  {
+    $unwind: {
+      path: "$authors",
+    },
+  },
+  {
+    $group: {
+      _id: "$authors.id",
+    },
+  },
+  {
+    $count: "authorsCount",
+  },
+]
 ```
 
 ### Task 4f)
