@@ -35,6 +35,7 @@ object A03_QueryTestMain {
         LoggingHelper.setStartTimeMilliseconds();
         println("Authors with the most articles (Functional API):");
         println("Author with most articles: " + QueryManagerFunctionalAPI.mostArticles().head);
+        LoggingHelper.printElapsedTimeStatusMessage();
         println();
 
         println("\n\n--- SQL Version ---");
@@ -43,10 +44,13 @@ object A03_QueryTestMain {
         println("Amount of distinct authors (SQL):");
         println(QueryManagerSQL.distinctAuthors());
         LoggingHelper.printElapsedTimeStatusMessage();
+        println();
 
         LoggingHelper.setStartTimeMilliseconds();
         println("Authors with the most articles (SQL):");
         println("Author with most articles: " + QueryManagerSQL.mostArticles().head);
+        LoggingHelper.printElapsedTimeStatusMessage();
+        println();
 
         println(
           s"Total elapsed time: ${LoggingHelper.getTimeDifferenceStringBetween(LoggingHelper.millisecondsTimeOnStart)}"
