@@ -49,3 +49,27 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
   },
 ]
 ```
+
+### Task 4d)
+
+```mongodb
+
+```
+
+### Task 4e)
+
+```mongodb
+
+```
+
+### Task 4f)
+
+```mongodb
+
+```
+
+### Task 4g)
+
+```mongodb
+
+```
