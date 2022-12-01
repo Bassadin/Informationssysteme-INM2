@@ -100,14 +100,43 @@ Created an index for authors.id
 ]
 ```
 
-### Task 4f) - Maximum amount of articles for an author
+### Task 4f) and g) - Maximum amount of articles for an author and who is that author
 
 ```mongodb
-
-```
-
-### Task 4g) - Who has the most articles?
-
-```mongodb
-
+[
+  {
+    $unwind: {
+      path: "$authors",
+    },
+  },
+  {
+    $group: {
+      _id: "$authors.id",
+      articles_count: {
+        $count: {},
+      },
+      name: {
+        $first: "$authors.name",
+      },
+      org: {
+        $first: "$authors.org",
+      },
+    },
+  },
+  {
+    $setWindowFields: {
+      sortBy: { articles_count: -1 },
+      output: {
+        articles_amount_rank: {
+          $rank: {},
+        },
+      },
+    },
+  },
+  {
+    $match: {
+      articles_amount_rank: 1,
+    },
+  },
+]
 ```
