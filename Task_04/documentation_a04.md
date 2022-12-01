@@ -4,6 +4,10 @@ Link to repository: https://github.com/Bassadin/Informationssysteme-INM2
 
 ## Subtaks
 
+### Before the others
+
+Created an index for authors.id
+
 ### Task 4a) - Title of Article by ID
 
 ```mongodb
