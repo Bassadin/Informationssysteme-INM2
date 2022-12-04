@@ -1,4 +1,4 @@
-# Task 04 Informationssysteme (Piepmeyer) - Redis
+# Task 04 Informationssysteme (Piepmeyer) - MongoDB
 
 Link to repository: <https://github.com/Bassadin/Informationssysteme-INM2>
 
