@@ -41,7 +41,7 @@ object QueryManagerSQL {
         // https://sql-bits.com/how-to-find-the-mode-in-sql/
         val sqlString =
             """
-                SELECT *
+                SELECT a1.id, FIRST(name) as name, FIRST(org) as org
                 FROM authors_for_most_articles a1
                 JOIN (
                     SELECT
@@ -51,7 +51,8 @@ object QueryManagerSQL {
                         GROUP BY authors_for_most_articles.id
                 ) a2
                 ON a1.id = a2.id
-                WHERE article_count_rank = 1;
+                WHERE article_count_rank = 1
+                GROUP BY a1.id;
             """;
 
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
