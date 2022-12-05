@@ -3,8 +3,8 @@ package Spark.Queries
 import Additional.RowConversion
 import DataClasses.Author
 import Spark.{ParquetReader, SparkConnectionManager}
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, explode}
-import org.apache.spark.sql.{DataFrame, Row}
 
 /*
 Handles querying methods
@@ -23,13 +23,11 @@ object QueryManagerSQL {
         val sqlResultDataFrame = SparkConnectionManager.sparkSession
             .sql("SELECT COUNT(DISTINCT id) as distinctAuthorsCount from authors_for_distinct");
 
-        val amountOfDistinctAuthors = sqlResultDataFrame
+        return sqlResultDataFrame
             .select("distinctAuthorsCount")
             .collect()
             .head
             .getLong(0);
-
-        return amountOfDistinctAuthors;
     };
 
     def mostArticles(): List[Author] = {
@@ -56,13 +54,6 @@ object QueryManagerSQL {
             """;
 
         val sqlResultDataFrame = SparkConnectionManager.sparkSession.sql(sqlString);
-
-        val authorsList: List[Author] = sqlResultDataFrame
-            .collect()
-            .map(RowConversion.rowToAuthor)
-            .toList;
-
-        return authorsList;
+        return sqlResultDataFrame.collect().map(RowConversion.rowToAuthor).toList;
     };
-
 }

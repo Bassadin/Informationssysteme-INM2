@@ -18,9 +18,8 @@ object QueryManagerFunctionalAPI {
         val authorsDataFrame: DataFrame = ParquetReader.parquetFileDataFrame
             .select(explode(col("authors")))
             .select("col.id");
-        val distinctAuthorsAmount: Long = authorsDataFrame.distinct().count();
 
-        return distinctAuthorsAmount;
+        return authorsDataFrame.distinct().count();
     };
 
     def mostArticles(): List[Author] = {
@@ -34,29 +33,16 @@ object QueryManagerFunctionalAPI {
             .agg(count("id").alias("count"))
             .select(
               col("id"),
-              rank()
-                  .over(Window.orderBy(col("count").desc))
-                  .as("article_count_rank")
+              rank().over(Window.orderBy(col("count").desc)).as("article_count_rank")
             )
             .as("a2");
 
         val sqlResultDataFrame = authorsDataFrame
             .join(rankDataFrame, authorsDataFrame("id") === rankDataFrame("id"))
+            .where(col("article_count_rank") === 1)
             .groupBy("a1.id")
-            .agg(
-              first("a1.id").as("id"),
-              first("name").as("name"),
-              first("org").as("org"),
-              first("article_count_rank").as("article_count_rank")
-            )
-            .where(col("article_count_rank") === 1);
+            .agg(first("a1.id").as("id"), first("name").as("name"), first("org").as("org"));
 
-        val authorsList: List[Author] = sqlResultDataFrame
-            .collect()
-            .map(RowConversion.rowToAuthor)
-            .toList;
-
-        return authorsList;
+        return sqlResultDataFrame.collect().map(RowConversion.rowToAuthor).toList;
     };
-
 }
