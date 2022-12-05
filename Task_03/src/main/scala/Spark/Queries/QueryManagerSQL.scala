@@ -37,9 +37,10 @@ object QueryManagerSQL {
         authorsDataFrame.createOrReplaceTempView("authors_for_most_articles");
 
         // https://sql-bits.com/how-to-find-the-mode-in-sql/
+        // Ignore nulls syntax: https://spark.apache.org/docs/latest/sql-ref-functions-builtin.html#aggregate-functions
         val sqlString =
             """
-                SELECT a1.id, FIRST(name) as name, FIRST(org) as org
+                SELECT a1.id, FIRST(name, true) as name, FIRST(org, true) as org
                 FROM authors_for_most_articles a1
                 JOIN (
                     SELECT
