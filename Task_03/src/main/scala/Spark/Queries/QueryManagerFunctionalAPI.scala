@@ -41,7 +41,11 @@ object QueryManagerFunctionalAPI {
             .join(rankDataFrame, authorsDataFrame("id") === rankDataFrame("id"))
             .where(col("article_count_rank") === 1)
             .groupBy("a1.id")
-            .agg(first("a1.id").as("id"), first("name").as("name"), first("org").as("org"));
+            .agg(
+              first("a1.id").as("id"),
+              first("name", ignoreNulls = true).as("name"),
+              first("org", ignoreNulls = true).as("org")
+            );
 
         return sqlResultDataFrame.collect().map(RowConversion.rowToAuthor).toList;
     };
