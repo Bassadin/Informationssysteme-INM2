@@ -2,7 +2,7 @@ import java.io.FileWriter
 import scala.io.Source
 import scala.util.matching.Regex
 
-object A03_RearrangeJSONFile {
+object RearrangeJSONFile {
     final private val INPUT_PATH = "src/data/dblp.v12.json";
     final private val OUTPUT_PATH = "src/data/dblp.v12.new.json";
 
