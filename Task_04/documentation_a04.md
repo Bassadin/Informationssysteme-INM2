@@ -60,24 +60,19 @@ Created an index for authors.id
 [
   {
     $match: {
-      id: 1535888970,
+      references: 1535888970,
     },
   },
   {
-    $lookup: {
-      from: "articles",
-      localField: "references",
-      foreignField: "id",
-      as: "articleReferences",
-    },
-  },
-  {
+    /**
+     * specifications: The fields to
+     *   include or exclude.
+     */
     $project: {
-      "articleReferences.title": 1,
+      title: true,
     },
   },
 ]
-
 ```
 
 ### Task 4e) - Amount of different Authors
