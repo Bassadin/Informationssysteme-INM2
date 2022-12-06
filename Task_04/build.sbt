@@ -8,3 +8,5 @@ lazy val root = (project in file("."))
       name := "Task_04"
     )
 
+// https://mvnrepository.com/artifact/io.spray/spray-json
+libraryDependencies += "io.spray" %% "spray-json" % "1.3.6"
