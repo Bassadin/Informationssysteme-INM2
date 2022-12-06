@@ -64,10 +64,6 @@ Created an index for authors.id
     },
   },
   {
-    /**
-     * specifications: The fields to
-     *   include or exclude.
-     */
     $project: {
       title: true,
     },
@@ -97,8 +93,6 @@ Created an index for authors.id
 
 ### Task 4f) and g) - Maximum amount of articles for an author and who is that author
 
-Solution 1 (Winner of my heart):
-
 ```mongodb
 [
   {
@@ -107,57 +101,15 @@ Solution 1 (Winner of my heart):
     },
   },
   {
-    $group: {
-      _id: "$authors.id",
-      articles_count: {
-        $count: {},
-      },
-      name: {
-        $first: "$authors.name",
-      },
-      org: {
-        $first: "$authors.org",
-      },
-    },
-  },
-  {
-    $setWindowFields: {
-      sortBy: { articles_count: -1 },
-      output: {
-        articles_amount_rank: {
-          $rank: {},
-        },
-      },
-    },
-  },
-  {
-    $match: {
-      articles_amount_rank: 1,
-    },
-  },
-]
-```
-
-Solution 2 (Probably more performant...):
-
-```mongodb
-[
-  {
-    $unwind: {
-      path: "$authors",
+    $replaceRoot: {
+      newRoot: "$authors",
     },
   },
   {
     $group: {
-      _id: "$authors.id",
+      _id: "$id",
       articles_count: {
         $count: {},
-      },
-      name: {
-        $first: "$authors.name",
-      },
-      org: {
-        $first: "$authors.org",
       },
     },
   },
