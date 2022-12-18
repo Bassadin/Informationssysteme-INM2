@@ -60,12 +60,25 @@ Created an index for authors.id
 [
   {
     $match: {
-      references: 1535888970,
+      id: 1535888970,
+    },
+  },
+  {
+    $lookup: {
+      from: "articles",
+      localField: "references",
+      foreignField: "id",
+      as: "articleReferences",
+    },
+  },
+  {
+    $unwind: {
+      path: "$articleReferences",
     },
   },
   {
     $project: {
-      title: true,
+      title: "$articleReferences.title",
     },
   },
 ]
