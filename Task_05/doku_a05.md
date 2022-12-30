@@ -9,8 +9,9 @@
 <https://neo4j.com/labs/apoc/4.3/database-integration/mongo/>
 
 ```neo4j
-// MongoDB import
+// MongoDB import example
 
-call apoc.mongo.find('mongodb://mongo:27017/a04.articles') yield value
-return value
+CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles') YIELD value
+RETURN value.id AS hashtags
+LIMIT 10;
 ```
