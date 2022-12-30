@@ -17,21 +17,29 @@ LIMIT 10;
 ```
 
 ```neo4j
-// MongoDB import articles
+// Show some articles in MongoDB
 
-CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles') YIELD value
+CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles')
+YIELD value
+RETURN value.id, value.title, value.authors LIMIT 10;
+```
 
-CALL apoc.graph.fromDocument(
-    value,
-    {
-        write: true,
-        skipValidation: true,
-        mappings: {
-            `$`: 'Article{!id,title}',
-            `$.authors`: 'Author{!id,name,org}'
-        }
-    }
-) YIELD graph AS g1
+```neo4j
+// Import articles from Mongo into neo4j
 
-return g1
+CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles')
+YIELD value
+MERGE (newArticle:Article {
+    id: value.id,
+    title: value.title
+})
+WITH newArticle, value
+UNWIND value.authors AS eachAuthorData
+// Might need some fallbacks for authors with different data based on id here
+MERGE (newAuthor:Person {
+    name: eachAuthorData.name,
+    id: eachAuthorData.id,
+    org: CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
+})
+MERGE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle);
 ```
