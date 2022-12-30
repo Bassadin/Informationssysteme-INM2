@@ -9,9 +9,29 @@
 <https://neo4j.com/labs/apoc/4.3/database-integration/mongo/>
 
 ```neo4j
-// MongoDB import example
+// MongoDB basic example
 
 CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles') YIELD value
-RETURN value.id AS hashtags
+RETURN value.id AS article_ids
 LIMIT 10;
+```
+
+```neo4j
+// MongoDB import articles
+
+CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles') YIELD value
+
+CALL apoc.graph.fromDocument(
+    value,
+    {
+        write: true,
+        skipValidation: true,
+        mappings: {
+            `$`: 'Article{!id,title}',
+            `$.authors`: 'Author{!id,name,org}'
+        }
+    }
+) YIELD graph AS g1
+
+return g1
 ```
