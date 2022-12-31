@@ -17,7 +17,7 @@ LIMIT 10;
 ```
 
 ```neo4j
-// Show some articles in MongoDB
+// Show some articles from MongoDB
 
 CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles')
 YIELD value
@@ -25,12 +25,16 @@ RETURN value.id, value.title, value.authors LIMIT 10;
 ```
 
 ```neo4j
-// Import articles from Mongo into neo4j with bathcing in parallel
+// Import articles from Mongo into neo4j with batching in parallel
 
 CALL apoc.periodic.iterate(
     "
         CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles')
         YIELD value
+        CALL apoc.log.info('--> Got MongoDB data!')
+        RETURN value
+        // TODO: REMOVE THIS LATER
+        LIMIT 1000;
     ",
     "
         MERGE (newArticle:Article {
@@ -40,22 +44,35 @@ CALL apoc.periodic.iterate(
         WITH newArticle, value
         UNWIND value.authors AS eachAuthorData
         // Might need some fallbacks for authors with different data based on id here
-        MERGE (newAuthor:Person {
+        MERGE (newAuthor:Author {
             name: eachAuthorData.name,
             id: eachAuthorData.id,
             org: CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
         })
-        MERGE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle);
+        MERGE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle)
+        WITH newAuthor, newArticle, value
+        CALL apoc.log.info('--> Hello World!');
     ",
     {
-        batchSize:50000,
+        batchSize: 25000,
         parallel: true
-    });
+    })
+    YIELD
+        total,
+        committedOperations,
+        failedOperations,
+        batches,
+        failedBatches,
+        retries,
+        errorMessages,
+        batch,
+        operations,
+        wasTerminated;
 ```
 
 ```neo4j
-// Show some articles from neo4j graph
+// Show some articles from neo4j as graph
 
-MATCH (a:Article)
-RETURN a.id, a.title LIMIT 10;
+MATCH (art:Article)<--(auth:Author)
+RETURN art, auth LIMIT 100;
 ```
