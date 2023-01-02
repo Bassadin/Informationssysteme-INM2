@@ -111,6 +111,33 @@ RETURN count(rel) as count
 
 ### Task b)
 
+```neo4j
+// Find the author Paul Erdős
+
+MATCH (author:Author)
+WHERE author.name = "Paul Erdős"
+RETURN author
+```
+
 ### Task c)
 
+```neo4j
+// Find all authors that have a degree of relationship to Paul Erdős of less than 5
+
+// https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-varlength
+
+MATCH (author:Author)-[rel:IS_AUTHOR_OF*1..5]-(erdos:Author)
+WHERE erdos.name = "Paul Erdős"
+RETURN author, rel
+```
+
 ### Task d)
+
+```neo4j
+// Get the Authors with the most articles
+
+MATCH (author:Author)-[rel:IS_AUTHOR_OF]->(article:Article)
+RETURN author, count(rel) as count
+ORDER BY count DESC
+LIMIT 1
+```
