@@ -25,6 +25,13 @@ RETURN value.id, value.title, value.authors LIMIT 10;
 ```
 
 ```neo4j
+// Delete everything
+
+MATCH (n)
+DETACH DELETE n
+```
+
+```neo4j
 // Import articles from Mongo into neo4j with batching in parallel
 
 CALL apoc.periodic.iterate(
