@@ -83,3 +83,34 @@ CALL apoc.periodic.iterate(
 MATCH (art:Article)<--(auth:Author)
 RETURN art, auth LIMIT 100;
 ```
+
+## Subtasks Task 3
+
+### Task a)
+
+```neo4j
+// Count article nodes
+
+MATCH (article: Article)
+RETURN count(article) as count
+```
+
+```neo4j
+// Count author nodes
+
+MATCH (author: Author)
+RETURN count(author) as count
+```
+
+```neo4j
+// Count author-article relationships
+
+MATCH (author: Author)-[rel:IS_AUTHOR_OF]->(article: Article)
+RETURN count(rel) as count
+```
+
+### Task b)
+
+### Task c)
+
+### Task d)
