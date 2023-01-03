@@ -39,6 +39,9 @@ CALL apoc.periodic.iterate(
 ```neo4j
 // Import articles from json into neo4j with batching in parallel
 
+CREATE INDEX author_id_index IF NOT EXISTS
+FOR (author:Author) ON (author.id);
+
 CALL apoc.periodic.iterate(
     "
         CALL apoc.load.jsonArray('file:///import/dblp.v12.new.json')
@@ -55,9 +58,9 @@ CALL apoc.periodic.iterate(
         // Might need some fallbacks for authors with different data based on id here
         MERGE (newAuthor:Author {id: eachAuthorData.id})
         ON CREATE
-            SET name = eachAuthorData.name
-            SET org = CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
-        })
+            SET
+                newAuthor.name = eachAuthorData.name,
+                newAuthor.org = CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
         CREATE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle)
         WITH newAuthor, newArticle, value
         CALL apoc.log.info('--> Hello World!');
