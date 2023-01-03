@@ -37,49 +37,47 @@ CALL apoc.periodic.iterate(
 ```
 
 ```neo4j
-// Import articles from Mongo into neo4j with batching in parallel
+// Import articles from json into neo4j with batching in parallel
 
 CALL apoc.periodic.iterate(
     "
-        CALL apoc.mongo.find('mongodb://mongo:27017/a05.articles')
+        CALL apoc.load.jsonArray('file:///import/dblp.v12.new.json')
         YIELD value
-        CALL apoc.log.info('--> Got MongoDB data!')
-        RETURN value
-        // TODO: REMOVE THIS LATER
-        LIMIT 1000;
+        RETURN value;
     ",
     "
-        MERGE (newArticle:Article {
+        CREATE (newArticle:Article {
             id: value.id,
             title: value.title
         })
         WITH newArticle, value
         UNWIND value.authors AS eachAuthorData
         // Might need some fallbacks for authors with different data based on id here
-        MERGE (newAuthor:Author {
-            name: eachAuthorData.name,
-            id: eachAuthorData.id,
-            org: CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
+        MERGE (newAuthor:Author {id: eachAuthorData.id})
+        ON CREATE
+            SET name = eachAuthorData.name
+            SET org = CASE WHEN eachAuthorData.org IS NULL THEN '' ELSE eachAuthorData.org END
         })
-        MERGE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle)
+        CREATE (newAuthor)-[:IS_AUTHOR_OF]->(newArticle)
         WITH newAuthor, newArticle, value
         CALL apoc.log.info('--> Hello World!');
     ",
     {
-        batchSize: 25000,
-        parallel: true
-    })
-    YIELD
-        total,
-        committedOperations,
-        failedOperations,
-        batches,
-        failedBatches,
-        retries,
-        errorMessages,
-        batch,
-        operations,
-        wasTerminated;
+        batchSize: 6000
+    }
+)
+YIELD
+    total,
+    committedOperations,
+    failedOperations,
+    batches,
+    failedBatches,
+    retries,
+    errorMessages,
+    batch,
+    operations,
+    wasTerminated;
+// TODO remove duplicates
 ```
 
 ```neo4j
