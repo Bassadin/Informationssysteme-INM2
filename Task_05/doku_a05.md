@@ -147,5 +147,4 @@ MATCH (author:Author)-[rel:IS_AUTHOR_OF]->(article:Article)
 RETURN author, count(rel) as relation_count
 ORDER BY relation_count DESC
 LIMIT 1;
-// TODO return author name and id with article count
 ```
