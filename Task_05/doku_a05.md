@@ -123,7 +123,6 @@ RETURN count(rel) as count
 // Find the author Paul Erdős
 
 MATCH (author:Author)
-// Maybe use regex here?
 WHERE author.name = "Paul Erdős"
 RETURN author
 ```
