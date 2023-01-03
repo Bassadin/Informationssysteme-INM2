@@ -1,10 +1,14 @@
 # Dokumentation A05
 
+## Docker setup
+
+I worked with `docker-compose`, using `docker-compose up -d` to start the Neo4j container in the background.
+
+My `docker-compose.yml` file has declarations for mounted volumes, such as the `/data` mountpoint as well as the `/plugins` and `/import` mountpoints.
+
 ## Import
 
-`CALL apoc.load.json("file:///import/dblp.v12.new.json")`
-
-### Neo4J Import script
+### MongoDB Integration (This didn't work)
 
 <https://neo4j.com/labs/apoc/4.3/database-integration/mongo/>
 
@@ -24,17 +28,7 @@ YIELD value
 RETURN value.id, value.title, value.authors LIMIT 10;
 ```
 
-```neo4j
-// Delete everything
-
-CALL apoc.periodic.iterate(
-    "MATCH (n) RETURN n",
-    "DETACH DELETE n",
-    {
-        batchSize:50000
-    }
-);
-```
+### Import from JSON
 
 ```neo4j
 // Import articles from json into neo4j with batching in parallel
@@ -85,11 +79,27 @@ YIELD
 // TODO remove duplicates
 ```
 
+### Show some Articles
+
 ```neo4j
 // Show some articles from neo4j as graph
 
 MATCH (art:Article)<--(auth:Author)
 RETURN art, auth LIMIT 100;
+```
+
+### Delete everything (debugging, mostly just did `docker-compose down -v` to delete everything)
+
+```neo4j
+// Delete everything
+
+CALL apoc.periodic.iterate(
+    "MATCH (n) RETURN n",
+    "DETACH DELETE n",
+    {
+        batchSize:50000
+    }
+);
 ```
 
 ## Subtasks Task 3
