@@ -42,6 +42,8 @@ CALL apoc.periodic.iterate(
 CREATE INDEX author_id_index IF NOT EXISTS
 FOR (author:Author) ON (author.id);
 
+// https://neo4j.com/docs/apoc/5/overview/apoc.periodic/apoc.periodic.iterate/#_config_parameters
+// https://neo4j.com/labs/apoc/4.2/overview/apoc.load/apoc.load.jsonArray/
 CALL apoc.periodic.iterate(
     "
         CALL apoc.load.jsonArray('file:///import/dblp.v12.new.json')
@@ -132,7 +134,6 @@ RETURN author
 // Find all authors that have a degree of relationship to Paul Erdős of less than 5
 
 // https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-varlength
-
 MATCH (author:Author)-[rel:IS_AUTHOR_OF*1..5]-(erdos:Author)
 WHERE erdos.name = "Paul Erdős"
 RETURN author, rel;
