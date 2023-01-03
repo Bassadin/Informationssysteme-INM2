@@ -27,8 +27,13 @@ RETURN value.id, value.title, value.authors LIMIT 10;
 ```neo4j
 // Delete everything
 
-MATCH (n)
-DETACH DELETE n
+CALL apoc.periodic.iterate(
+    "MATCH (n) RETURN n",
+    "DETACH DELETE n",
+    {
+        batchSize:50000
+    }
+);
 ```
 
 ```neo4j
