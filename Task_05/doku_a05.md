@@ -121,6 +121,7 @@ RETURN count(rel) as count
 // Find the author Paul Erdős
 
 MATCH (author:Author)
+// Maybe use regex here?
 WHERE author.name = "Paul Erdős"
 RETURN author
 ```
@@ -134,7 +135,7 @@ RETURN author
 
 MATCH (author:Author)-[rel:IS_AUTHOR_OF*1..5]-(erdos:Author)
 WHERE erdos.name = "Paul Erdős"
-RETURN author, rel
+RETURN author, rel;
 ```
 
 ### Task d)
@@ -143,7 +144,8 @@ RETURN author, rel
 // Get the Authors with the most articles
 
 MATCH (author:Author)-[rel:IS_AUTHOR_OF]->(article:Article)
-RETURN author, count(rel) as count
-ORDER BY count DESC
-LIMIT 1
+RETURN author, count(rel) as relation_count
+ORDER BY relation_count DESC
+LIMIT 1;
+// TODO return author name and id with article count
 ```
