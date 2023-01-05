@@ -139,6 +139,8 @@ RETURN author
 
 ### Task c)
 
+I'm not sure if these results are correct, but I verified some of the results with the website <https://mathscinet.ams.org/mathscinet/collaborationDistance.html>.
+
 ```neo4j
 // Find all authors that have a degree of relationship to Paul Erdős of less than 5
 
@@ -149,6 +151,9 @@ RETURN author, rel;
 ```
 
 ### Task d)
+
+Hier war wieder nicht angegeben, ob es auch mehrere Autoren geben darf, die die meisten Artikel geschrieben haben. Ich habe es so gelöst, dass nur ein Autor zurückgegeben wird, der die meisten Artikel geschrieben hat.
+Nicht ganz sicher, wie man das mit mehreren Autoren lösen könnte.
 
 ```neo4j
 // Get the Authors with the most articles
