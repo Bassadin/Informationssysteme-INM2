@@ -51,7 +51,6 @@ CALL apoc.periodic.iterate(
         })
         WITH newArticle, value
         UNWIND value.authors AS eachAuthorData
-        // Might need some fallbacks for authors with different data based on id here
         MERGE (newAuthor:Author {id: eachAuthorData.id})
         ON CREATE
             SET
@@ -76,7 +75,6 @@ YIELD
     batch,
     operations,
     wasTerminated;
-// TODO remove duplicates
 ```
 
 ### Show some Articles
