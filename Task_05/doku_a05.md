@@ -131,7 +131,7 @@ RETURN count(rel) as count
 // Find the author Paul Erdős
 
 MATCH (author:Author)
-WHERE author.name = "Paul Erdős"
+WHERE author.name =~ "Paul [Ee]rd.*s"
 RETURN author
 ```
 
