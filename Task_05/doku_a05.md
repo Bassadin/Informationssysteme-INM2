@@ -149,7 +149,7 @@ I'm not sure if these results are correct, but I verified some of the results wi
 
 // https://neo4j.com/docs/cypher-manual/current/syntax/patterns/#cypher-pattern-varlength
 MATCH (author:Author)-[rel:IS_AUTHOR_OF*1..5]-(erdos:Author)
-WHERE erdos.name = "Paul Erdős"
+WHERE erdos.name =~ "Paul [Ee]rd.*s"
 RETURN author, rel;
 ```
 
