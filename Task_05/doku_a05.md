@@ -160,7 +160,7 @@ Get the Author with the most articles.
 It wasn't specified if there could be multiple authors with the most articles. I solved it so that only one author is returned, who wrote the most articles.
 Not quite sure how to solve it with multiple authors.
 
-Maybe like this: <https://stackoverflow.com/a/30725296/3526350>.
+Maybe like this: <https://stackoverflow.com/a/30725296/3526350>. Didn't try that yet.
 
 ```neo4j
 // Get the Authors with the most articles
