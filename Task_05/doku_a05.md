@@ -170,3 +170,15 @@ RETURN author, COUNT(rel) as relation_count
 ORDER BY relation_count DESC
 LIMIT 1;
 ```
+
+### Bonus query
+
+Find all articles from authors associated with the Furtwangen org.
+
+```neo4j
+// All articles from authors associated with the Furtwangen org
+
+MATCH (author:Author)-[rel:IS_AUTHOR_OF]->(article: Article)
+WHERE author.org =~ ".*Furtwangen.*"
+RETURN author, article, rel
+```
