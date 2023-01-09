@@ -102,6 +102,8 @@ CALL apoc.periodic.iterate(
 
 ## Subtasks Task 3
 
+Count the number of nodes and relationships in the graph.
+
 ### Task a)
 
 ```neo4j
@@ -127,6 +129,8 @@ RETURN count(rel) as count
 
 ### Task b)
 
+Find the author Paul Erdős in the graph.
+
 ```neo4j
 // Find the author Paul Erdős
 
@@ -137,6 +141,7 @@ RETURN author
 
 ### Task c)
 
+Find all authors that have a degree of relationship to Paul Erdős of less than 5.
 I'm not sure if these results are correct, but I verified some of the results with the website <https://mathscinet.ams.org/mathscinet/collaborationDistance.html>.
 
 ```neo4j
@@ -150,14 +155,18 @@ RETURN author, rel;
 
 ### Task d)
 
-Hier war wieder nicht angegeben, ob es auch mehrere Autoren geben darf, die die meisten Artikel geschrieben haben. Ich habe es so gelöst, dass nur ein Autor zurückgegeben wird, der die meisten Artikel geschrieben hat.
-Nicht ganz sicher, wie man das mit mehreren Autoren lösen könnte.
+Get the Author with the most articles.
+
+It wasn't specified if there could be multiple authors with the most articles. I solved it so that only one author is returned, who wrote the most articles.
+Not quite sure how to solve it with multiple authors.
+
+Maybe like this: <https://stackoverflow.com/a/30725296/3526350>.
 
 ```neo4j
 // Get the Authors with the most articles
 
 MATCH (author:Author)-[rel:IS_AUTHOR_OF]->(article:Article)
-RETURN author, count(rel) as relation_count
+RETURN author, COUNT(rel) as relation_count
 ORDER BY relation_count DESC
 LIMIT 1;
 ```
